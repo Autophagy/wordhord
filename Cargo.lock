@@ -1781,6 +1781,7 @@ name = "wordhord"
 version = "0.1.0"
 dependencies = [
  "comrak",
+ "serde",
  "serde_dhall",
  "tinytemplate",
 ]
