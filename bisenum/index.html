@@ -1,0 +1,11 @@
+<html>
+    <head>
+        <title>Wordhord</title>
+    </head>
+    <body>
+        <ul>
+        {{ for post in posts }}
+            <li><a href="gewritu/{post.slug}.html">[{post.published}] {post.title}</a></li>
+        {{ endfor }}
+        </ul>
+    </body>

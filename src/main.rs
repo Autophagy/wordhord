@@ -23,6 +23,12 @@ struct Post {
     content: String,
 }
 
+
+#[derive(Clone, Serialize, Debug)]
+struct Index<'a> {
+    posts: &'a Vec<Post>
+}
+
 fn main() -> Result<(), Box<dyn Error>> {
     let build_dir = env::var("BUILDDIR")?;
     if Path::new(&build_dir).exists() {
@@ -35,6 +41,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let s = fs::read_to_string("./bisenum/post.html")?;
     tt.add_template("post", &s)?;
+
+    let i = fs::read_to_string("./bisenum/index.html")?;
+    tt.add_template("index", &i)?;
+
     let paths = fs::read_dir("./hord")?;
 
     let mut posts: Vec<Post> = Vec::new();
@@ -44,9 +54,14 @@ fn main() -> Result<(), Box<dyn Error>> {
         posts.push(b);
     }
 
+    let index = Index { posts: &posts };
+    let rendered_index = tt.render("index", &index)?;
+    fs::write(format!("{}/index.html", build_dir), rendered_index)?;
+
+    fs::create_dir(format!("{}/gewritu", &build_dir))?;
     for post in posts {
         let rendered = tt.render("post", &post)?;
-        fs::write(format!("{}/{}.html", build_dir, post.slug), rendered)?;
+        fs::write(format!("{}/gewritu/{}.html", build_dir, post.slug), rendered)?;
     }
 
     Ok(())
