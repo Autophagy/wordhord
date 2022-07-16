@@ -112,3 +112,7 @@ header {
 header #post-date {
     opacity: 0.75;
 }
+
+#post-footer {
+    margin-top: 1em;
+}

@@ -23,5 +23,10 @@
         <div id="content">
             {content}
         </div>
+        <div id="post-footer">
+            <div id="post-tags">
+                [ {{ for tag in tags }} {tag} {{ endfor }} ]
+            </div>
+        </div>
     </body>
 </html>
