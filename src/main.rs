@@ -45,6 +45,15 @@ fn main() -> Result<(), Box<dyn Error>> {
     let i = fs::read_to_string("./bisenum/index.html")?;
     tt.add_template("index", &i)?;
 
+
+    let mut options = ComrakOptions::default();
+    options.extension.strikethrough = true;
+    options.extension.table = true;
+    options.extension.header_ids = Some("".to_string());
+    options.extension.footnotes = true;
+    options.render.github_pre_lang = true;
+    options.render.escape = true;
+
     let paths = fs::read_dir("./hord")?;
 
     let mut posts: Vec<Post> = Vec::new();

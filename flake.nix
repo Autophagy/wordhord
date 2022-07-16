@@ -34,6 +34,7 @@
             installPhase = ''
               mkdir -p $out
               cp -r $BUILDDIR/* $out
+              cp -r static $out
             '';
           };
 
