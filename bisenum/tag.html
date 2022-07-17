@@ -19,7 +19,7 @@
         </header>
         <ul>
             {{ for post in posts }}
-            <li><a href="/gewritu/{post.slug}.html">[{post.published}] :: {post.title}</a></li>
+            <li><a href="/gewritu/{post.slug}">[{post.published}] :: {post.title}</a></li>
             {{ endfor}}
         </ul>
     </body>
