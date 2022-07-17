@@ -10,19 +10,18 @@
       let
         pkgs = import nixpkgs { inherit system; };
         naersk-lib = pkgs.callPackage naersk { };
-        src = ./.;
       in
       {
         packages = rec {
           wordhord = naersk-lib.buildPackage {
-            root = src;
+            root = ./wordhord;
             buildInputs = with pkgs; [ pkg-config openssl ];
           };
 
           site = pkgs.stdenv.mkDerivation {
             pname = "site";
             inherit (wordhord) version;
-            inherit src;
+            src = ./.;
             buildInputs = [ wordhord ];
 
             buildPhase = ''
