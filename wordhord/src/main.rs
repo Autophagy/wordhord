@@ -55,6 +55,7 @@ struct PostPage {
 struct Config {
     drv: String,
     build_dir: String,
+    repo: String
 }
 
 #[derive(Clone, Serialize, Debug)]
