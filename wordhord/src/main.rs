@@ -74,6 +74,9 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut tt = TinyTemplate::new();
     tt.set_default_formatter(&format_unescaped);
 
+    let f = fs::read_to_string("./bisenum/footer.html")?;
+    tt.add_template("footer", &f)?;
+
     let s = fs::read_to_string("./bisenum/post.html")?;
     tt.add_template("post", &s)?;
 

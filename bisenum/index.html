@@ -20,8 +20,6 @@
             <li><a href="gewritu/{post.slug}">[{post.published}] {post.title}</a></li>
         {{ endfor }}
         </ul>
-        <footer>
-            <a href="https://github.com/autophagy/wordhord">{config.drv}</a>
-        </footer>
+        {{ call footer with config }}
     </body>
 </html>
