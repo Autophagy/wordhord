@@ -196,3 +196,7 @@ section.footnotes {
     padding: 0 1em;
     border: 1px solid white;
 }
+
+footer #derivation {
+    word-wrap: anywhere;
+}
