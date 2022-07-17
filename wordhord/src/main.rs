@@ -1,4 +1,5 @@
-use comrak::{markdown_to_html, ComrakOptions};
+use comrak::plugins::syntect::SyntectAdapter;
+use comrak::{markdown_to_html_with_plugins, ComrakOptions, ComrakPlugins};
 use serde::{Deserialize, Serialize};
 use std::env;
 use std::error::Error;
@@ -82,12 +83,16 @@ fn main() -> Result<(), Box<dyn Error>> {
     options.render.github_pre_lang = true;
     options.render.escape = true;
 
+    let adapter = SyntectAdapter::new("Solarized (light)");
+    let mut plugins = ComrakPlugins::default();
+    plugins.render.codefence_syntax_highlighter = Some(&adapter);
+
     let paths = fs::read_dir("./hord")?;
 
     let mut posts: Vec<Post> = Vec::new();
     for path in paths {
         let mut b: Post = serde_dhall::from_file(path.unwrap().path()).parse()?;
-        b.content = markdown_to_html(&b.content, &options);
+        b.content = markdown_to_html_with_plugins(&b.content, &options, &plugins);
         posts.push(b);
     }
 

@@ -103,6 +103,62 @@ h3 {
     font-weight: bold;
 }
 
+em {
+    font-style: italic;
+}
+
+strong {
+    font-weight: bold;
+}
+
+p {
+    margin: 1em 0;
+}
+
+ol {
+    list-style: decimal-leading-zero inside;
+    margin: 1em 0;
+}
+
+ul {
+    list-style: square inside;
+    margin: 1em 0;
+}
+
+li p {
+    display: contents
+}
+
+pre {
+    padding: 0 1em;
+    margin: 1em 0;
+}
+
+blockquote {
+    font-size: 2em;
+    line-height: 1.5;
+    padding-left: 0.75em;
+    border-left: 5px solid white;
+}
+
+table {
+    margin: 1em 0;
+    width: 100%;
+    max-width: 100%;
+}
+
+table thead th {
+    font-weight: bold;
+    text-align: left;
+}
+
+table th, table td {
+    padding: 0.5em;
+}
+
+table tbody tr:nth-of-type(odd) {
+    background-color: #3E3E3E;
+}
 
 /* Specific Stuff */
 
@@ -110,10 +166,33 @@ header {
     margin-bottom: 2em;
 }
 
-header #post-date {
-    opacity: 0.75;
+#post-path {
+    margin-bottom: 2em;
 }
 
-#post-footer {
-    margin-top: 1em;
+#post-details {
+    display: flex;
+    flex-direction: column;
+}
+
+#post-details .label {
+    width: 6em;
+    display: inline-block;
+}
+
+#post-details .sep {
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+sup.footnote-ref {
+    font-size: 0.75em;
+    position: relative;
+    top: -0.75em;
+    margin-left: 0.3em;
+}
+
+section.footnotes {
+    padding: 0 1em;
+    border: 1px solid white;
 }
