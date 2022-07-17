@@ -26,6 +26,7 @@
 
             buildPhase = ''
               export BUILDDIR=$(pwd)
+              export DRV=${placeholder "out"}
               cd $src
               ${wordhord}/bin/wordhord
             '';

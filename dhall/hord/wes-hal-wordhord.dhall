@@ -1,5 +1,5 @@
-let Post = ../dhall/Post.dhall
-let Tag = ../dhall/Tag.dhall
+let Post = ../types/Post.dhall
+let Tag = ../types/Tag.dhall
 
 let content = ''
 Hwæt! Here we are again, the yearly site redesign with an added attempt to write
