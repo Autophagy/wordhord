@@ -11,15 +11,12 @@ use tinytemplate::{format_unescaped, TinyTemplate};
 
 #[derive(Clone, Deserialize, Serialize, Debug, PartialEq)]
 pub enum Tag {
-    A,
-    B,
-    C,
-    D,
+    Placeholder,
 }
 
 impl Tag {
     pub fn iterator() -> Iter<'static, Tag> {
-        static TAGS: [Tag; 4] = [Tag::A, Tag::B, Tag::C, Tag::D];
+        static TAGS: [Tag; 1] = [Tag::Placeholder];
         TAGS.iter()
     }
 }
@@ -27,10 +24,7 @@ impl Tag {
 impl fmt::Display for Tag {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let tag = match self {
-            Tag::A => "A",
-            Tag::B => "B",
-            Tag::C => "C",
-            Tag::D => "D",
+            Tag::Placeholder => "Placeholder",
         };
         write!(f, "{}", tag)
     }
