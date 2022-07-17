@@ -1,2 +1,0 @@
-# wordhord
-Static Site Generator
