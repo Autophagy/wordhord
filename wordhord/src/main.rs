@@ -1,3 +1,4 @@
+use chrono::NaiveDate;
 use comrak::plugins::syntect::SyntectAdapter;
 use comrak::{markdown_to_html_with_plugins, ComrakOptions, ComrakPlugins};
 use serde::{Deserialize, Serialize};
@@ -39,7 +40,7 @@ struct TagPage<'a> {
 #[derive(Clone, Deserialize, Serialize, Debug)]
 struct Post {
     title: String,
-    published: String,
+    published: NaiveDate,
     slug: String,
     tags: Vec<Tag>,
     content: String,
@@ -55,7 +56,7 @@ struct PostPage {
 struct Config {
     drv: String,
     build_dir: String,
-    repo: String
+    repo: String,
 }
 
 #[derive(Clone, Serialize, Debug)]
@@ -107,6 +108,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         post.content = markdown_to_html_with_plugins(&post.content, &options, &plugins);
         posts.push(post);
     }
+    posts.sort_by(|a, b| b.published.cmp(&a.published));
 
     let index = Index {
         posts: &posts,
