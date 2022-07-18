@@ -9,6 +9,8 @@ use std::path::Path;
 use std::slice::Iter;
 use tinytemplate::{format_unescaped, TinyTemplate};
 
+mod templates;
+
 #[derive(Clone, Deserialize, Serialize, Debug, PartialEq)]
 pub enum Tag {
     Placeholder,
@@ -75,18 +77,10 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut tt = TinyTemplate::new();
     tt.set_default_formatter(&format_unescaped);
-
-    let f = fs::read_to_string("./bisenum/footer.html")?;
-    tt.add_template("footer", &f)?;
-
-    let s = fs::read_to_string("./bisenum/post.html")?;
-    tt.add_template("post", &s)?;
-
-    let i = fs::read_to_string("./bisenum/index.html")?;
-    tt.add_template("index", &i)?;
-
-    let t = fs::read_to_string("./bisenum/tag.html")?;
-    tt.add_template("tag", &t)?;
+    tt.add_template("index", templates::INDEX)?;
+    tt.add_template("post", templates::POST)?;
+    tt.add_template("tag", templates::TAG)?;
+    tt.add_template("footer", templates::FOOTER)?;
 
     let mut options = ComrakOptions::default();
     options.extension.strikethrough = true;
