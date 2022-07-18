@@ -160,6 +160,11 @@ table tbody tr:nth-of-type(odd) {
     background-color: #3E3E3E;
 }
 
+code {
+    background: #2d2d2d;
+￼   color: #d3d0c8;
+}
+
 /* Specific Stuff */
 
 header {

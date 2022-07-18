@@ -13,12 +13,12 @@ mod templates;
 
 #[derive(Clone, Deserialize, Serialize, Debug, PartialEq)]
 pub enum Tag {
-    Placeholder,
+    Nix,
 }
 
 impl Tag {
     pub fn iterator() -> Iter<'static, Tag> {
-        static TAGS: [Tag; 1] = [Tag::Placeholder];
+        static TAGS: [Tag; 1] = [Tag::Nix];
         TAGS.iter()
     }
 }
@@ -26,7 +26,7 @@ impl Tag {
 impl fmt::Display for Tag {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let tag = match self {
-            Tag::Placeholder => "Placeholder",
+            Tag::Nix => "Nix",
         };
         write!(f, "{}", tag)
     }
@@ -90,7 +90,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     options.render.github_pre_lang = true;
     options.render.escape = true;
 
-    let adapter = SyntectAdapter::new("Solarized (light)");
+    let adapter = SyntectAdapter::new("base16-eighties.dark");
     let mut plugins = ComrakPlugins::default();
     plugins.render.codefence_syntax_highlighter = Some(&adapter);
 
