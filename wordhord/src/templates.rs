@@ -53,6 +53,9 @@ pub static POST: &'static str = r##"
                     <span class="label">published</span><span class="sep">::</span><span class="detail">{post.published}</span>
                 </div>
                 <div class="row">
+                    <span class="label">time</span><span class="sep">::</span><span class="detail">{post.read_time} mins</span>
+                </div>
+                <div class="row">
                     <span class="label">tags</span><span class="sep">::</span><span class="detail">[ {{ for tag in post.tags }} <a href="/tags/{tag}">{tag}</a> {{ endfor }} ]</span>
                 </div>
             </div>

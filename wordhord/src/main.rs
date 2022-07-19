@@ -46,6 +46,8 @@ struct Post {
     slug: String,
     tags: Vec<Tag>,
     content: String,
+    #[serde(default = "default_read_time")]
+    read_time: usize,
 }
 
 #[derive(Clone, Deserialize, Serialize, Debug)]
@@ -65,6 +67,26 @@ struct Config {
 struct Index<'a> {
     posts: &'a Vec<Post>,
     config: &'a Config,
+}
+
+fn default_read_time() -> usize {
+    0
+}
+
+fn estimate_read_time(s: &String) -> usize {
+    let mut total_words = 0;
+    let mut previous_char = char::MAX;
+    for chr in s.chars() {
+        if previous_char.is_ascii_whitespace()
+            && (chr.is_ascii_alphabetic() || chr.is_ascii_digit() || chr.is_ascii_punctuation())
+        {
+            total_words += 1;
+        }
+        previous_char = chr;
+    }
+
+    // 200 WPM
+    total_words/200
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -99,6 +121,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut posts: Vec<Post> = Vec::new();
     for path in paths {
         let mut post: Post = serde_dhall::from_file(path.unwrap().path()).parse()?;
+        post.read_time = estimate_read_time(&post.content);
         post.content = markdown_to_html_with_plugins(&post.content, &options, &plugins);
         posts.push(post);
     }
