@@ -13,22 +13,22 @@
       in
       {
         packages = rec {
-          wordhord = naersk-lib.buildPackage {
+          bin = naersk-lib.buildPackage {
             root = ./wordhord;
             buildInputs = with pkgs; [ pkg-config openssl ];
           };
 
-          site = pkgs.stdenv.mkDerivation {
-            pname = "site";
-            inherit (wordhord) version;
+          wordhord = pkgs.stdenv.mkDerivation {
+            pname = "wordhord";
+            inherit (bin) version;
             src = ./.;
-            buildInputs = [ wordhord ];
+            buildInputs = [ bin ];
 
             buildPhase = ''
               export BUILDDIR=$(pwd)
               export DRV=${placeholder "out"}
               cd $src
-              ${wordhord}/bin/wordhord
+              ${bin}/bin/wordhord
             '';
 
             installPhase = ''
@@ -38,7 +38,7 @@
             '';
           };
 
-          default = self.packages.${system}.site;
+          default = self.packages.${system}.wordhord;
         };
 
         devShell = with pkgs; mkShell {
