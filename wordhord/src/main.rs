@@ -74,6 +74,7 @@ fn default_read_time() -> usize {
 }
 
 fn estimate_read_time(s: &String) -> usize {
+    let wpm = 200;
     let mut total_words = 0;
     let mut previous_char = char::MAX;
     for chr in s.chars() {
@@ -85,8 +86,14 @@ fn estimate_read_time(s: &String) -> usize {
         previous_char = chr;
     }
 
-    // 200 WPM
-    total_words/200
+    let quotient = total_words / wpm;
+    let remainder = total_words % wpm;
+
+    if remainder < (wpm / 2) {
+        quotient
+    } else {
+        quotient + 1
+    }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
