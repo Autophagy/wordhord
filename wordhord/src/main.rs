@@ -76,7 +76,7 @@ fn default_read_time() -> usize {
 fn estimate_read_time(s: &String) -> usize {
     let wpm = 200;
     let mut total_words = 0;
-    let mut previous_char = char::MAX;
+    let mut previous_char = ' ';
     for chr in s.chars() {
         if previous_char.is_ascii_whitespace()
             && (chr.is_ascii_alphabetic() || chr.is_ascii_digit() || chr.is_ascii_punctuation())
@@ -173,4 +173,20 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn test_time_estimation() {
+        assert_eq!(estimate_read_time(&"Word ".repeat(0)), 0);
+        assert_eq!(estimate_read_time(&"Word ".repeat(200)), 1);
+        assert_eq!(estimate_read_time(&"Word ".repeat(2000)), 10);
+        assert_eq!(estimate_read_time(&"Word ".repeat(20000)), 100);
+        assert_eq!(estimate_read_time(&"Word ".repeat(299)), 1);
+        assert_eq!(estimate_read_time(&"Word ".repeat(300)), 2);
+        assert_eq!(estimate_read_time(&"Word ".repeat(301)), 2);
+    }
 }

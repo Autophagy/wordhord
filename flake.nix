@@ -16,6 +16,7 @@
           bin = naersk-lib.buildPackage {
             root = ./wordhord;
             buildInputs = with pkgs; [ pkg-config openssl ];
+            doCheck = true;
           };
 
           wordhord = pkgs.stdenv.mkDerivation {
