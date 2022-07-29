@@ -73,6 +73,8 @@ fn default_read_time() -> usize {
     0
 }
 
+/// Returns an estimated read time for a given string, assuming a reading speed
+/// of 200 words per minute, rounded to the nearest minute.
 fn estimate_read_time(s: &String) -> usize {
     let wpm = 200;
     let mut total_words = 0;
