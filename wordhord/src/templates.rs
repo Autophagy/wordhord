@@ -8,8 +8,6 @@ pub static INDEX: &str = r##"
     <meta name="theme-color" content="#000000">
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="/static/css/main.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
     <title>wordhord</title>
 </head>
     <body>
@@ -36,8 +34,6 @@ pub static POST: &str = r##"
     <meta name="theme-color" content="#000000">
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="/static/css/main.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
     <title>[{post.published}] :: {post.title}</title>
 </head>
     <body>
@@ -78,8 +74,6 @@ pub static TAG: &str = r##"
     <meta name="theme-color" content="#000000">
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="/static/css/main.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
     <title>{tag}</title>
 </head>
     <body>
