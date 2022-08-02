@@ -1,4 +1,4 @@
-pub static INDEX: &'static str = r##"
+pub static INDEX: &str = r##"
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,7 +26,7 @@ pub static INDEX: &'static str = r##"
 </html>
 "##;
 
-pub static POST: &'static str = r##"
+pub static POST: &str = r##"
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -68,7 +68,7 @@ pub static POST: &'static str = r##"
 </html>
 "##;
 
-pub static TAG: &'static str = r##"
+pub static TAG: &str = r##"
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -98,7 +98,7 @@ pub static TAG: &'static str = r##"
 </html>
 "##;
 
-pub static FOOTER: &'static str = r##"
+pub static FOOTER: &str = r##"
 <footer>
     <div id="derivation">
         <a href="{repo}">{drv}</a>

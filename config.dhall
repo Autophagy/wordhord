@@ -1,4 +1,4 @@
-let Config = ./types/Config.dhall
+let Config = ./dhall/types/Config.dhall
 
 let drv = env:DRV as Text ? ""
 

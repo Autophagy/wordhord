@@ -2,6 +2,7 @@ use chrono::NaiveDate;
 use comrak::plugins::syntect::SyntectAdapter;
 use comrak::{markdown_to_html_with_plugins, ComrakOptions, ComrakPlugins};
 use serde::{Deserialize, Serialize};
+use std::env;
 use std::error::Error;
 use std::fmt;
 use std::fs;
@@ -63,6 +64,25 @@ struct Config {
     repo: String,
 }
 
+impl Config {
+    fn new(args: &[String]) -> Result<Config, &'static str> {
+        if args.len() < 2 {
+            return Err("Not enough arguments");
+        }
+        let config_path = args[1].clone();
+
+        if !Path::new(&config_path).exists() {
+            return Err("Configfile does not exist");
+        }
+
+        let parsed_config: Result<Config, _> = serde_dhall::from_file(&args[1]).parse();
+        match parsed_config {
+            Ok(config) => Ok(config),
+            Err(_) => Err("Error parsing config"),
+        }
+    }
+}
+
 #[derive(Clone, Serialize, Debug)]
 struct Index<'a> {
     posts: &'a Vec<Post>,
@@ -75,7 +95,7 @@ fn default_read_time() -> usize {
 
 /// Returns an estimated read time for a given string, assuming a reading speed
 /// of 200 words per minute, rounded to the nearest minute.
-fn estimate_read_time(s: &String) -> usize {
+fn estimate_read_time(s: &str) -> usize {
     let wpm = 200;
     let mut total_words = 0;
     let mut previous_char = ' ';
@@ -99,7 +119,8 @@ fn estimate_read_time(s: &String) -> usize {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let config: Config = serde_dhall::from_file("./dhall/config.dhall").parse()?;
+    let args: Vec<String> = env::args().collect();
+    let config = Config::new(&args)?;
 
     if Path::new(&config.build_dir).exists() {
         fs::remove_dir_all(&config.build_dir)?;

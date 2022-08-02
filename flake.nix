@@ -29,7 +29,7 @@
               export BUILDDIR=$(pwd)
               export DRV=${placeholder "out"}
               cd $src
-              ${bin}/bin/wordhord
+              ${bin}/bin/wordhord $src/config.dhall
             '';
 
             installPhase = ''
