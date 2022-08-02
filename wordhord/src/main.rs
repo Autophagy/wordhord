@@ -59,6 +59,7 @@ struct PostPage {
 
 #[derive(Clone, Deserialize, Serialize, Debug)]
 struct Config {
+    hord_path: String,
     drv: String,
     build_dir: String,
     repo: String,
@@ -146,7 +147,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut plugins = ComrakPlugins::default();
     plugins.render.codefence_syntax_highlighter = Some(&adapter);
 
-    let paths = fs::read_dir("./dhall/hord")?;
+    let paths = fs::read_dir(&config.hord_path)?;
 
     let mut posts: Vec<Post> = Vec::new();
     for path in paths {
