@@ -1,7 +1,3 @@
-let Post = ../types/Post.dhall
-let Tag = ../types/Tag.dhall
-
-let content = ''
 Hwæt! Here we are again, the yearly site redesign with an added attempt to write
 more 'blogposts'. Remember those?
 
@@ -26,12 +22,3 @@ assembled itself around us. It could expand in scope in future, and serve as a
 kind of personal/portfolio site with a blog section, but for now it's just a tool
 that takes some text and puts it in a slightly different form in a slightly
 different place so that a browser can read it.
-''
-
-in
-  { title = "Wes Hāl, Wordhord"
-  , published = "2022-07-17"
-  , slug = "wes-hal-wordhord"
-  , tags = [ ] : List Tag
-  , content
-  } : Post

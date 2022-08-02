@@ -1,7 +1,3 @@
-let Post = ../types/Post.dhall
-let Tag = ../types/Tag.dhall
-
-let content = ''
 I've found my Arch Linux installations tend to be an accumulation
 of packages, quick-fixes and hacks that weigh like a nightmare on my brain.
 This is normally not the world's biggest deal, except when I
@@ -145,12 +141,3 @@ repo. I've not run into any blocking problems with it yet as my daily driver,
 and picking it up has definitely helped give me the confidence to convert
 my projects' existing build processes to Nix Flakes. I'll check back in 6-12 months
 down the line to see if I still feel the same way.
-''
-
-in
-  { title = "From Arch to NixOS"
-  , published = "2022-07-18"
-  , slug = "arch-to-nixos"
-  , tags = [ Tag.Nix ]
-  , content
-  } : Post

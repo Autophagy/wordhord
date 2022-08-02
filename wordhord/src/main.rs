@@ -6,7 +6,7 @@ use std::env;
 use std::error::Error;
 use std::fmt;
 use std::fs;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::slice::Iter;
 use tinytemplate::{format_unescaped, TinyTemplate};
 
@@ -150,11 +150,17 @@ fn main() -> Result<(), Box<dyn Error>> {
     let paths = fs::read_dir(&config.hord_path)?;
 
     let mut posts: Vec<Post> = Vec::new();
-    for path in paths {
-        let mut post: Post = serde_dhall::from_file(path.unwrap().path()).parse()?;
-        post.read_time = estimate_read_time(&post.content);
-        post.content = markdown_to_html_with_plugins(&post.content, &options, &plugins);
-        posts.push(post);
+    for entry in paths {
+        let path = entry?.path();
+        if !path.is_dir() {
+            let mut post: Post = serde_dhall::from_file(path).parse()?;
+            let mut content_path = PathBuf::from(&config.hord_path);
+            content_path.push(&post.content);
+            let content = fs::read_to_string(content_path.canonicalize()?)?;
+            post.read_time = estimate_read_time(&content);
+            post.content = markdown_to_html_with_plugins(&content, &options, &plugins);
+            posts.push(post);
+        }
     }
     posts.sort_by(|a, b| b.published.cmp(&a.published));
 
