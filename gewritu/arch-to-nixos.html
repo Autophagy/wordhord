@@ -8,8 +8,6 @@
     <meta name="theme-color" content="#000000">
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="/static/css/main.css">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=swap" rel="stylesheet">
     <title>[2022-07-18] :: From Arch to NixOS</title>
 </head>
     <body>
@@ -113,7 +111,7 @@ rebuild the system again if I need to.</p>
 <p>Using <a href="https://github.com/nix-community/home-manager">Home Manager</a> has let me
 even bundle my previously ad-hoc dotfile management system into the same Nix
 expression format. For example, my <code>zsh</code> configuration now looks like:</p>
-<pre style="background-color:#2d2d2d;" lang="nix"><code>
+<pre lang="nix" style="background-color:#2d2d2d;"><code>
 <span style="color:#d3d0c8;">{
 </span><span style="color:#d3d0c8;">  home.packages = with pkgs; [ pure-prompt ];
 </span><span style="color:#d3d0c8;">
@@ -171,7 +169,7 @@ down the line to see if I still feel the same way.</p>
         
 <footer>
     <div id="derivation">
-        <a href="https://github.com/autophagy/wordhord">/nix/store/43963av0w4a05g20lhaxh64wnv0wrym5-wordhord-0.1.0</a>
+        <a href="https://github.com/autophagy/wordhord">/nix/store/nhbnmmxy99cn2msmzlb0800gpgg46n5k-wordhord-0.1.0</a>
     </div>
 </footer>
 
