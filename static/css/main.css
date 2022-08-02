@@ -132,6 +132,8 @@ li p {
 pre {
     padding: 0 1em;
     margin: 1em 0;
+    overflow-x: auto;
+    border: 1px solid white;
 }
 
 blockquote {
@@ -163,10 +165,6 @@ table tbody tr:nth-of-type(odd) {
 code {
     background: #2d2d2d;
 ￼   color: #d3d0c8;
-}
-
-pre {
-    overflow-x: auto;
 }
 
 /* Specific Stuff */
