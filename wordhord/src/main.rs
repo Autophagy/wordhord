@@ -1,97 +1,45 @@
 use chrono::NaiveDate;
 use comrak::plugins::syntect::SyntectAdapter;
 use comrak::{markdown_to_html_with_plugins, ComrakOptions, ComrakPlugins};
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use std::env;
 use std::error::Error;
-use std::fmt;
 use std::fs;
 use std::path::Path;
-use std::slice::Iter;
 use tinytemplate::{format_unescaped, TinyTemplate};
 
+use config::{Config, Tag};
+
+mod config;
 mod templates;
 
-#[derive(Clone, Deserialize, Serialize, Debug, PartialEq)]
-pub enum Tag {
-    Nix,
-}
-
-impl Tag {
-    pub fn iterator() -> Iter<'static, Tag> {
-        static TAGS: [Tag; 1] = [Tag::Nix];
-        TAGS.iter()
-    }
-}
-
-impl fmt::Display for Tag {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let tag = match self {
-            Tag::Nix => "Nix",
-        };
-        write!(f, "{}", tag)
-    }
-}
-
-#[derive(Clone, Serialize, Debug)]
+#[derive(Serialize)]
 struct TagPage<'a> {
     tag: Tag,
     posts: Vec<Post>,
     config: &'a Config,
 }
 
-#[derive(Clone, Deserialize, Serialize, Debug)]
+#[derive(Serialize, Clone)]
 struct Post {
     title: String,
     published: NaiveDate,
     slug: String,
     tags: Vec<Tag>,
     content: String,
-    #[serde(default = "default_read_time")]
     read_time: usize,
 }
 
-#[derive(Clone, Deserialize, Serialize, Debug)]
+#[derive(Serialize)]
 struct PostPage {
     post: Post,
     config: Config,
 }
 
-#[derive(Clone, Deserialize, Serialize, Debug)]
-struct Config {
-    hord: Vec<Post>,
-    drv: String,
-    build_dir: String,
-    repo: String,
-}
-
-impl Config {
-    fn new(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 2 {
-            return Err("Not enough arguments");
-        }
-        let config_path = args[1].clone();
-
-        if !Path::new(&config_path).exists() {
-            return Err("Configfile does not exist");
-        }
-
-        let parsed_config: Result<Config, _> = serde_dhall::from_file(&args[1]).parse();
-        match parsed_config {
-            Ok(config) => Ok(config),
-            Err(_) => Err("Error parsing config"),
-        }
-    }
-}
-
-#[derive(Clone, Serialize, Debug)]
+#[derive(Serialize)]
 struct Index<'a> {
     posts: &'a Vec<Post>,
     config: &'a Config,
-}
-
-fn default_read_time() -> usize {
-    0
 }
 
 /// Returns an estimated read time for a given string, assuming a reading speed
@@ -149,11 +97,15 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let mut posts: Vec<Post> = Vec::new();
     for hord_post in &config.hord {
-        let mut post = hord_post.clone();
-        let content = fs::read_to_string(&post.content)?;
-        post.read_time = estimate_read_time(&content);
-        post.content = markdown_to_html_with_plugins(&content, &options, &plugins);
-        posts.push(post);
+        let content = fs::read_to_string(&hord_post.content)?;
+        posts.push(Post {
+            title: hord_post.title.clone(),
+            published: hord_post.published,
+            slug: hord_post.slug.clone(),
+            tags: hord_post.tags.clone(),
+            content: markdown_to_html_with_plugins(&content, &options, &plugins),
+            read_time: estimate_read_time(&content),
+        });
     }
     posts.sort_by(|a, b| b.published.cmp(&a.published));
 
