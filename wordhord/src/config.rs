@@ -43,17 +43,12 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 2 {
-            return Err("Not enough arguments");
-        }
-        let config_path = args[1].clone();
-
-        if !Path::new(&config_path).exists() {
+    pub fn new(config_path: &str) -> Result<Config, &'static str> {
+        if !Path::new(config_path).exists() {
             return Err("Configfile does not exist");
         }
 
-        let parsed_config: Result<Config, _> = serde_dhall::from_file(&args[1]).parse();
+        let parsed_config: Result<Config, _> = serde_dhall::from_file(config_path).parse();
         match parsed_config {
             Ok(config) => Ok(config),
             Err(_) => Err("Error parsing config"),

@@ -11,3 +11,4 @@ serde_dhall = "0.11.2"
 serde = "1.0.139"
 tinytemplate = "1.2.1"
 chrono = { version = "0.4.19", features = ["serde"] }
+clap = { version = "3.2.16", features = ["cargo"] }
