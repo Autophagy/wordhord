@@ -92,11 +92,12 @@ fn create_markdown_options() -> ComrakOptions {
     options
 }
 
-fn render_posts<'a>(
-    hord: &'a Vec<crate::config::Post>,
-    options: &'a ComrakOptions,
-    plugins: &'a ComrakPlugins,
-) -> std::io::Result<Vec<Post<'a>>> {
+fn render_posts(hord: &Vec<crate::config::Post>) -> std::io::Result<Vec<Post>> {
+    let options = create_markdown_options();
+    let adapter = SyntectAdapter::new("base16-eighties.dark");
+    let mut plugins = ComrakPlugins::default();
+    plugins.render.codefence_syntax_highlighter = Some(&adapter);
+
     let mut posts: Vec<Post> = Vec::new();
     for hord_post in hord {
         let content = fs::read_to_string(&hord_post.content)?;
@@ -105,7 +106,7 @@ fn render_posts<'a>(
             published: hord_post.published,
             slug: &hord_post.slug,
             tags: &hord_post.tags,
-            content: markdown_to_html_with_plugins(&content, options, plugins),
+            content: markdown_to_html_with_plugins(&content, &options, &plugins),
             read_time: estimate_read_time(&content),
         });
     }
@@ -115,12 +116,8 @@ fn render_posts<'a>(
 
 pub fn build_wordhord(config: &Config) -> Result<(), Box<dyn Error>> {
     let tt = create_templater()?;
-    let options = create_markdown_options();
-    let adapter = SyntectAdapter::new("base16-eighties.dark");
-    let mut plugins = ComrakPlugins::default();
-    plugins.render.codefence_syntax_highlighter = Some(&adapter);
 
-    let posts = render_posts(&config.hord, &options, &plugins)?;
+    let posts = render_posts(&config.hord)?;
 
     let rendered_index = tt.render(
         "index",
