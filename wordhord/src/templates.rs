@@ -16,7 +16,7 @@ pub static INDEX: &str = r##"
         </header>
         <ul>
         {{ for post in posts }}
-            <li><a href="gewritu/{post.slug}">[{post.published}] {post.title}</a></li>
+            <li><a href="{config.hord_dir}/{post.slug}">[{post.published}] {post.title}</a></li>
         {{ endfor }}
         </ul>
         {{ call footer with config }}
@@ -52,7 +52,7 @@ pub static POST: &str = r##"
                     <span class="label">time</span><span class="sep">::</span><span class="detail">{post.read_time} mins</span>
                 </div>
                 <div class="row">
-                    <span class="label">tags</span><span class="sep">::</span><span class="detail">[ {{ for tag in post.tags }} <a href="/tags/{tag}">{tag}</a> {{ endfor }} ]</span>
+                    <span class="label">tags</span><span class="sep">::</span><span class="detail">[ {{ for tag in post.tags }} <a href="/{config.tag_dir}/{tag}">{tag}</a> {{ endfor }} ]</span>
                 </div>
             </div>
         </header>
@@ -84,7 +84,7 @@ pub static TAG: &str = r##"
         </header>
         <ul>
             {{ for post in posts }}
-            <li><a href="/gewritu/{post.slug}">[{post.published}] :: {post.title}</a></li>
+            <li><a href="/{config.hord_dir}/{post.slug}">[{post.published}] :: {post.title}</a></li>
             {{ endfor}}
         </ul>
         {{ call footer with config }}

@@ -12,30 +12,30 @@ use crate::templates;
 
 #[derive(Serialize)]
 struct TagPage<'a> {
-    tag: Tag,
-    posts: Vec<Post>,
+    tag: &'a Tag,
+    posts: &'a Vec<Post<'a>>,
     config: &'a Config,
 }
 
 #[derive(Serialize, Clone)]
-struct Post {
-    title: String,
+struct Post<'a> {
+    title: &'a str,
     published: NaiveDate,
-    slug: String,
-    tags: Vec<Tag>,
+    slug: &'a str,
+    tags: &'a Vec<Tag>,
     content: String,
     read_time: usize,
 }
 
 #[derive(Serialize)]
-struct PostPage {
-    post: Post,
-    config: Config,
+struct PostPage<'a> {
+    post: &'a Post<'a>,
+    config: &'a Config,
 }
 
 #[derive(Serialize)]
 struct Index<'a> {
-    posts: &'a Vec<Post>,
+    posts: &'a Vec<Post<'a>>,
     config: &'a Config,
 }
 
@@ -71,14 +71,17 @@ pub fn create_build_dir(config: &Config) -> std::io::Result<()> {
     fs::create_dir(&config.build_dir)
 }
 
-pub fn build_wordhord(config: &Config) -> Result<(), Box<dyn Error>> {
+fn create_templater<'a>() -> Result<TinyTemplate<'a>, Box<dyn Error>> {
     let mut tt = TinyTemplate::new();
     tt.set_default_formatter(&format_unescaped);
     tt.add_template("index", templates::INDEX)?;
     tt.add_template("post", templates::POST)?;
     tt.add_template("tag", templates::TAG)?;
     tt.add_template("footer", templates::FOOTER)?;
+    Ok(tt)
+}
 
+fn create_markdown_options() -> ComrakOptions {
     let mut options = ComrakOptions::default();
     options.extension.strikethrough = true;
     options.extension.table = true;
@@ -86,61 +89,71 @@ pub fn build_wordhord(config: &Config) -> Result<(), Box<dyn Error>> {
     options.extension.footnotes = true;
     options.render.github_pre_lang = true;
     options.render.escape = true;
+    options
+}
 
-    let adapter = SyntectAdapter::new("base16-eighties.dark");
-    let mut plugins = ComrakPlugins::default();
-    plugins.render.codefence_syntax_highlighter = Some(&adapter);
-
+fn render_posts<'a>(
+    hord: &'a Vec<crate::config::Post>,
+    options: &'a ComrakOptions,
+    plugins: &'a ComrakPlugins,
+) -> std::io::Result<Vec<Post<'a>>> {
     let mut posts: Vec<Post> = Vec::new();
-    for hord_post in &config.hord {
+    for hord_post in hord {
         let content = fs::read_to_string(&hord_post.content)?;
         posts.push(Post {
-            title: hord_post.title.clone(),
+            title: &hord_post.title,
             published: hord_post.published,
-            slug: hord_post.slug.clone(),
-            tags: hord_post.tags.clone(),
-            content: markdown_to_html_with_plugins(&content, &options, &plugins),
+            slug: &hord_post.slug,
+            tags: &hord_post.tags,
+            content: markdown_to_html_with_plugins(&content, options, plugins),
             read_time: estimate_read_time(&content),
         });
     }
     posts.sort_by(|a, b| b.published.cmp(&a.published));
+    Ok(posts)
+}
 
-    let index = Index {
-        posts: &posts,
-        config,
-    };
-    let rendered_index = tt.render("index", &index)?;
-    fs::write(format!("{}/index.html", config.build_dir), rendered_index)?;
+pub fn build_wordhord(config: &Config) -> Result<(), Box<dyn Error>> {
+    let tt = create_templater()?;
+    let options = create_markdown_options();
+    let adapter = SyntectAdapter::new("base16-eighties.dark");
+    let mut plugins = ComrakPlugins::default();
+    plugins.render.codefence_syntax_highlighter = Some(&adapter);
 
-    fs::create_dir(format!("{}/gewritu", &config.build_dir))?;
+    let posts = render_posts(&config.hord, &options, &plugins)?;
+
+    let rendered_index = tt.render(
+        "index",
+        &Index {
+            posts: &posts,
+            config,
+        },
+    )?;
+    fs::write(format!("{}/index.html", &config.build_dir), rendered_index)?;
+
+    let hord_path = format!("{}/{}", &config.build_dir, &config.hord_dir);
+    fs::create_dir(&hord_path)?;
     for post in &posts {
-        let post_page: PostPage = PostPage {
-            post: post.clone(),
-            config: config.clone(),
-        };
-        let rendered = tt.render("post", &post_page)?;
-        fs::write(
-            format!("{}/gewritu/{}.html", &config.build_dir, post.slug),
-            rendered,
-        )?;
+        let rendered = tt.render("post", &PostPage { post, config })?;
+        fs::write(format!("{}/{}.html", &hord_path, post.slug), rendered)?;
     }
 
-    fs::create_dir(format!("{}/tags", &config.build_dir))?;
+    let tag_path = format!("{}/{}", &config.build_dir, &config.tag_dir);
+    fs::create_dir(&tag_path)?;
     for tag in Tag::iterator() {
-        let tag_page = TagPage {
-            tag: tag.clone(),
-            posts: posts
-                .clone()
-                .into_iter()
-                .filter(|p| p.tags.contains(tag))
-                .collect(),
-            config,
-        };
-        let rendered_tag = tt.render("tag", &tag_page)?;
-        fs::write(
-            format!("{}/tags/{}.html", config.build_dir, tag),
-            rendered_tag,
+        let rendered_tag = tt.render(
+            "tag",
+            &TagPage {
+                tag,
+                posts: &posts
+                    .clone()
+                    .into_iter()
+                    .filter(|p| p.tags.contains(tag))
+                    .collect(),
+                config,
+            },
         )?;
+        fs::write(format!("{}/{}.html", &tag_path, tag), rendered_tag)?;
     }
 
     Ok(())

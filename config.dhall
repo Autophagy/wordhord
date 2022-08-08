@@ -21,5 +21,11 @@ let hord =
         }
       ]
 
-in    { hord, drv, build_dir, repo = "https://github.com/autophagy/wordhord" }
+in    { hord
+      , drv
+      , build_dir
+      , hord_dir = "gewritu"
+      , tag_dir = "tags"
+      , repo = "https://github.com/autophagy/wordhord"
+      }
     : Config

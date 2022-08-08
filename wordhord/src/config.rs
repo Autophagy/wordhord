@@ -39,6 +39,8 @@ pub struct Config {
     pub hord: Vec<Post>,
     pub drv: String,
     pub build_dir: String,
+    pub hord_dir: String,
+    pub tag_dir: String,
     pub repo: String,
 }
 
