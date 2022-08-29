@@ -9,6 +9,11 @@
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="/static/css/main.css">
     <title>[2022-08-29] :: Consistent Terraform Environments with Nix and Sops</title>
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Consistent Terraform Environments with Nix and Sops">
+    <meta property="og:description" content="2022-08-29 // 4 mins // [ Nix DevOps ]">
+    <meta property="og:image" content="/static/images/card.png">
 </head>
     <body>
         <header>
@@ -42,7 +47,7 @@ secret access keys for AWS. There's a few ways of getting these credentials into
 terraform. One way is by by adding them into the provider using sensitive variables
 and a <code>.tfvar</code> file:</p>
 <p><code>main.tf</code></p>
-<pre lang="tcl" style="background-color:#2d2d2d;"><code>
+<pre style="background-color:#2d2d2d;" lang="tcl"><code>
 <span style="color:#6699cc;">provider </span><span style="color:#d3d0c8;">&quot;</span><span style="color:#99cc99;">aws</span><span style="color:#d3d0c8;">&quot; {
 </span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">region</span><span style="color:#d3d0c8;">     = &quot;</span><span style="color:#99cc99;">eu-west-1</span><span style="color:#d3d0c8;">&quot;
 </span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">access_key</span><span style="color:#d3d0c8;"> = var.access_key
@@ -94,7 +99,7 @@ polluting any other terraform environments I might have. I can also use a
 <code>shellHook</code> to populate the development environment with the required environment
 variables:</p>
 <p><code>creds.env</code></p>
-<pre style="background-color:#2d2d2d;" lang="sh"><code>
+<pre lang="sh" style="background-color:#2d2d2d;"><code>
 <span style="color:#f2777a;">AWS_ACCESS_KEY_ID</span><span style="color:#d3d0c8;">=&quot;</span><span style="color:#99cc99;">anaccesskey</span><span style="color:#d3d0c8;">&quot;
 </span><span style="color:#f2777a;">AWS_SECRET_ACCESS_KEY</span><span style="color:#d3d0c8;">=&quot;</span><span style="color:#99cc99;">asecretkey</span><span style="color:#d3d0c8;">&quot;
 </span>
@@ -154,7 +159,7 @@ It works with a variety of filetypes, including dotenv files!</p>
 <p>Using my GPG key to encrypt the above <code>creds.env</code> file yields the following
 (notice that the file itself isn't GPG encrypted, only the individual environment
 variables!):</p>
-<pre lang="sh" style="background-color:#2d2d2d;"><code>
+<pre style="background-color:#2d2d2d;" lang="sh"><code>
 <span style="color:#6699cc;">λ</span><span style="color:#d3d0c8;"> export SOPS_PGP_FP=&quot;</span><span style="color:#99cc99;">MY GPG KEY FINGERPRINT</span><span style="color:#d3d0c8;">&quot;
 </span><span style="color:#6699cc;">λ</span><span style="color:#d3d0c8;"> sops</span><span style="color:#f2777a;"> --encrypt</span><span style="color:#d3d0c8;"> creds.env
 </span><span style="color:#f2777a;">AWS_ACCESS_KEY_ID</span><span style="color:#d3d0c8;">=</span><span style="color:#99cc99;">ENC</span><span style="color:#cc99cc;">[</span><span style="color:#99cc99;">AES256_GCM,data:...,type:str</span><span style="color:#cc99cc;">]
@@ -170,7 +175,7 @@ variables!):</p>
 </code></pre>
 <p>I then include this encrypted version of the <code>creds.env</code> file with <code>flake.nix</code>,
 and source the environment variables from it:</p>
-<pre style="background-color:#2d2d2d;" lang="sh"><code>
+<pre lang="sh" style="background-color:#2d2d2d;"><code>
 <span style="color:#6699cc;">devShells.terraform</span><span style="color:#d3d0c8;"> = pkgs.mkShell {
 </span><span style="color:#d3d0c8;">  buildInputs = with pkgs; </span><span style="color:#cc99cc;">[</span><span style="color:#d3d0c8;"> sops terraform tflint terraform-docs </span><span style="color:#cc99cc;">]</span><span style="color:#d3d0c8;">;
 </span><span style="color:#d3d0c8;">  shellHook = &#39;&#39;
@@ -193,7 +198,7 @@ GPG key when needed.</p>
         
 <footer>
     <div id="derivation">
-        <a href="https://github.com/autophagy/wordhord">/nix/store/s6h4f447j8q0npslmksjy5gamffk5j30-wordhord-0.1.0</a>
+        <a href="https://github.com/autophagy/wordhord">/nix/store/6iwm3s58c2dzifacjrd3ckxz7gdkbrjj-wordhord-0.1.0</a>
     </div>
 </footer>
 
