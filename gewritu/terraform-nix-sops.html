@@ -1,0 +1,201 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
+    <meta name="theme-color" content="#000000">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/static/css/main.css">
+    <title>[2022-08-29] :: Consistent Terraform Environments with Nix and Sops</title>
+</head>
+    <body>
+        <header>
+            <div id="post-path">
+                <a href="/">wordhord</a>
+            </div>
+            <div id="post-details">
+                <div class="row">
+                    <span class="label">title</span><span class="sep">::</span><span class="detail">Consistent Terraform Environments with Nix and Sops</span>
+                </div>
+                <div class="row">
+                    <span class="label">published</span><span class="sep">::</span><span class="detail">2022-08-29</span>
+                </div>
+                <div class="row">
+                    <span class="label">time</span><span class="sep">::</span><span class="detail">4 mins</span>
+                </div>
+                <div class="row">
+                    <span class="label">tags</span><span class="sep">::</span><span class="detail">[  <a href="/tags/Nix">Nix</a>  <a href="/tags/DevOps">DevOps</a>  ]</span>
+                </div>
+            </div>
+        </header>
+        <div id="content">
+            <p>I've somehow managed to convince several companies over the last few years
+to hire me as a devops/infra engineer, which mostly involves using incantations
+to transform configuration files into invoices. One of those incantations is
+<a href="https://www.terraform.io/">Terraform</a>, an infrastructure-as-code tool that
+integrates with lots of cloud services.</p>
+<p>Working with Terraform always requires the involvement of some credentials for
+whatever cloud infrastructure service you're targeting, like the access and
+secret access keys for AWS. There's a few ways of getting these credentials into
+terraform. One way is by by adding them into the provider using sensitive variables
+and a <code>.tfvar</code> file:</p>
+<p><code>main.tf</code></p>
+<pre lang="tcl" style="background-color:#2d2d2d;"><code>
+<span style="color:#6699cc;">provider </span><span style="color:#d3d0c8;">&quot;</span><span style="color:#99cc99;">aws</span><span style="color:#d3d0c8;">&quot; {
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">region</span><span style="color:#d3d0c8;">     = &quot;</span><span style="color:#99cc99;">eu-west-1</span><span style="color:#d3d0c8;">&quot;
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">access_key</span><span style="color:#d3d0c8;"> = var.access_key
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">secret_key</span><span style="color:#d3d0c8;"> = var.secret_key
+</span><span style="color:#d3d0c8;">}
+</span>
+</code></pre>
+<p><code>variables.tf</code></p>
+<pre style="background-color:#2d2d2d;" lang="tcl"><code>
+<span style="color:#cc99cc;">variable </span><span style="color:#d3d0c8;">&quot;</span><span style="color:#99cc99;">access_key</span><span style="color:#d3d0c8;">&quot; {
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">type</span><span style="color:#d3d0c8;">      = string
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">sensitive</span><span style="color:#d3d0c8;"> = true
+</span><span style="color:#d3d0c8;">}
+</span><span style="color:#d3d0c8;">
+</span><span style="color:#cc99cc;">variable </span><span style="color:#d3d0c8;">&quot;</span><span style="color:#99cc99;">secret_key</span><span style="color:#d3d0c8;">&quot; {
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">type</span><span style="color:#d3d0c8;">      = string
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">sensitive</span><span style="color:#d3d0c8;"> = true
+</span><span style="color:#d3d0c8;">}
+</span>
+</code></pre>
+<p><code>aws.tfvars</code></p>
+<pre style="background-color:#2d2d2d;" lang="tcl"><code>
+<span style="color:#6699cc;">access_key</span><span style="color:#d3d0c8;"> = &lt;AWS_ACCESS_KEY_ID&gt;
+</span><span style="color:#6699cc;">secret_key</span><span style="color:#d3d0c8;"> = &lt;AWS_SECRET_ACCESS_KEY&gt;
+</span>
+</code></pre>
+<p>Though this gets the credentials into Terraform, I feel icky having these credentials
+lying around in plaintext in a file - especially when these credentials usually
+have a very wide blast zone, since they're meant to be used to change infrastructure
+in a cloud provider. One malformed <code>.gitignore</code> entry and a careless <code>git add .</code>,
+and you could be in for a bad time.</p>
+<p>Another common way, that I also use, is with environment variables. For example,
+the AWS provider will also look for valid credentials in <code>AWS_ACCESS_KEY_ID</code> and
+<code>AWS_SECRET_ACCESS_KEY</code>, so a typical use of terraform would look like:</p>
+<pre lang="sh" style="background-color:#2d2d2d;"><code>
+<span style="color:#6699cc;">$</span><span style="color:#d3d0c8;"> export AWS_ACCESS_KEY_ID=&quot;</span><span style="color:#99cc99;">anaccesskey</span><span style="color:#d3d0c8;">&quot;
+</span><span style="color:#6699cc;">$</span><span style="color:#d3d0c8;"> export AWS_SECRET_ACCESS_KEY=&quot;</span><span style="color:#99cc99;">asecretkey</span><span style="color:#d3d0c8;">&quot;
+</span><span style="color:#6699cc;">$</span><span style="color:#d3d0c8;"> terraform plan
+</span>
+</code></pre>
+<p>Doing this every time is tiresome, though. Plus, the credentials are now present
+in my shell history file. So my problem was twofold: a consistent,
+low-effort, minimal-intervention development environment for terraform without
+having the credentials hanging out in plaintext.</p>
+<h2><a href="#consistent-environments-with-nix-devshells" aria-hidden="true" class="anchor" id="consistent-environments-with-nix-devshells"></a>Consistent Environments with Nix Devshells</h2>
+<p>For a consistent environment, nix's devshells come to the rescue. This way, I can
+also fix the terraform version and have a bunch of extra tools, like tflint, without
+polluting any other terraform environments I might have. I can also use a
+<code>shellHook</code> to populate the development environment with the required environment
+variables:</p>
+<p><code>creds.env</code></p>
+<pre style="background-color:#2d2d2d;" lang="sh"><code>
+<span style="color:#f2777a;">AWS_ACCESS_KEY_ID</span><span style="color:#d3d0c8;">=&quot;</span><span style="color:#99cc99;">anaccesskey</span><span style="color:#d3d0c8;">&quot;
+</span><span style="color:#f2777a;">AWS_SECRET_ACCESS_KEY</span><span style="color:#d3d0c8;">=&quot;</span><span style="color:#99cc99;">asecretkey</span><span style="color:#d3d0c8;">&quot;
+</span>
+</code></pre>
+<p><code>flake.nix</code></p>
+<pre style="background-color:#2d2d2d;" lang="sh"><code>
+<span style="color:#d3d0c8;">{
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">inputs</span><span style="color:#d3d0c8;"> = {
+</span><span style="color:#d3d0c8;">    nixpkgs.url = &quot;</span><span style="color:#99cc99;">nixpkgs/nixos-unstable</span><span style="color:#d3d0c8;">&quot;;
+</span><span style="color:#d3d0c8;">    utils = {
+</span><span style="color:#d3d0c8;">      url = &quot;</span><span style="color:#99cc99;">github:numtide/flake-utils</span><span style="color:#d3d0c8;">&quot;;
+</span><span style="color:#d3d0c8;">      inputs.nixpkgs.follows = &quot;</span><span style="color:#99cc99;">nixpkgs</span><span style="color:#d3d0c8;">&quot;;
+</span><span style="color:#d3d0c8;">    };
+</span><span style="color:#d3d0c8;">  };
+</span><span style="color:#d3d0c8;">
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">outputs</span><span style="color:#d3d0c8;"> = { self, nixpkgs, utils }:
+</span><span style="color:#d3d0c8;">    </span><span style="color:#6699cc;">utils.lib.eachDefaultSystem</span><span style="color:#d3d0c8;"> (system:
+</span><span style="color:#d3d0c8;">      </span><span style="color:#66cccc;">let</span><span style="color:#d3d0c8;"> pkgs = nixpkgs.legacyPackages.${</span><span style="color:#f2777a;">system</span><span style="color:#d3d0c8;">};
+</span><span style="color:#d3d0c8;">      </span><span style="color:#6699cc;">in
+</span><span style="color:#d3d0c8;">      {
+</span><span style="color:#d3d0c8;">        </span><span style="color:#6699cc;">devShells.terraform</span><span style="color:#d3d0c8;"> =
+</span><span style="color:#d3d0c8;">          </span><span style="color:#6699cc;">pkgs.mkShell </span><span style="color:#d3d0c8;">{
+</span><span style="color:#d3d0c8;">            buildInputs = with pkgs; </span><span style="color:#cc99cc;">[</span><span style="color:#d3d0c8;">terraform tflint terraform-docs </span><span style="color:#cc99cc;">]</span><span style="color:#d3d0c8;">;
+</span><span style="color:#d3d0c8;">            shellHook = &#39;&#39;
+</span><span style="color:#d3d0c8;">              set -a
+</span><span style="color:#d3d0c8;">              source ${</span><span style="color:#f2777a;">.</span><span style="color:#d3d0c8;">/creds.env}
+</span><span style="color:#d3d0c8;">              set +a
+</span><span style="color:#d3d0c8;">            &#39;&#39;;
+</span><span style="color:#d3d0c8;">          };
+</span><span style="color:#d3d0c8;">      }
+</span><span style="color:#d3d0c8;">    );
+</span><span style="color:#d3d0c8;">}
+</span>
+</code></pre>
+<p>Then, in whatever terraform projects I want these to be in, I can use <a href="https://direnv.net/">direnv</a>,
+with an <code>.envrc</code> file like:</p>
+<pre style="background-color:#2d2d2d;"><code>
+<span style="color:#d3d0c8;">use flake path/to/flake/.#terraform
+</span>
+</code></pre>
+<p>When I drop into a terraform project, it now sets up an environment with a fixed
+terraform version, some side-tooling, and an environment populated with the environment
+variables I need to work.</p>
+<p>However, the credentials are still in plain text, both in the <code>creds.env</code> file
+next to <code>flake.nix</code>, but also in the nix store:</p>
+<pre style="background-color:#2d2d2d;" lang="sh"><code>
+<span style="color:#6699cc;">λ</span><span style="color:#d3d0c8;"> cat /nix/store/y14ih9jfyrqmdxqpg1c5x6aws5162slz-source/creds.env
+</span><span style="color:#f2777a;">AWS_ACCESS_KEY_ID</span><span style="color:#d3d0c8;">=&quot;</span><span style="color:#99cc99;">anaccesskey</span><span style="color:#d3d0c8;">&quot;
+</span><span style="color:#f2777a;">AWS_SECRET_ACCESS_KEY</span><span style="color:#d3d0c8;">=&quot;</span><span style="color:#99cc99;">asecretkey</span><span style="color:#d3d0c8;">&quot;
+</span>
+</code></pre>
+<p>Which is not ideal.</p>
+<h2><a href="#secrets-encryption-with-mozilla-sops" aria-hidden="true" class="anchor" id="secrets-encryption-with-mozilla-sops"></a>Secrets Encryption with Mozilla SOPS</h2>
+<p>I addressed the plaintext credentials with Mozilla's <a href="https://github.com/mozilla/sops">SOPS</a>,
+a really nice tool for encrypting, decrypting and editing secrets and credentials.
+It works with a variety of filetypes, including dotenv files!</p>
+<p>Using my GPG key to encrypt the above <code>creds.env</code> file yields the following
+(notice that the file itself isn't GPG encrypted, only the individual environment
+variables!):</p>
+<pre lang="sh" style="background-color:#2d2d2d;"><code>
+<span style="color:#6699cc;">λ</span><span style="color:#d3d0c8;"> export SOPS_PGP_FP=&quot;</span><span style="color:#99cc99;">MY GPG KEY FINGERPRINT</span><span style="color:#d3d0c8;">&quot;
+</span><span style="color:#6699cc;">λ</span><span style="color:#d3d0c8;"> sops</span><span style="color:#f2777a;"> --encrypt</span><span style="color:#d3d0c8;"> creds.env
+</span><span style="color:#f2777a;">AWS_ACCESS_KEY_ID</span><span style="color:#d3d0c8;">=</span><span style="color:#99cc99;">ENC</span><span style="color:#cc99cc;">[</span><span style="color:#99cc99;">AES256_GCM,data:...,type:str</span><span style="color:#cc99cc;">]
+</span><span style="color:#f2777a;">AWS_SECRET_ACCESS_KEY</span><span style="color:#d3d0c8;">=</span><span style="color:#99cc99;">ENC</span><span style="color:#cc99cc;">[</span><span style="color:#99cc99;">AES256_GCM,data:...,type:str</span><span style="color:#cc99cc;">]
+</span><span style="color:#f2777a;">sops_lastmodified</span><span style="color:#d3d0c8;">=</span><span style="color:#99cc99;">2022-08-27T21:08:17Z
+</span><span style="color:#f2777a;">sops_mac</span><span style="color:#d3d0c8;">=</span><span style="color:#99cc99;">ENC</span><span style="color:#cc99cc;">[</span><span style="color:#99cc99;">AES256_GCM,...,type:str</span><span style="color:#cc99cc;">]
+</span><span style="color:#f2777a;">sops_pgp__list_0__map_fp</span><span style="color:#d3d0c8;">=</span><span style="color:#99cc99;">MY </span><span style="color:#6699cc;">GPG</span><span style="color:#d3d0c8;"> KEY FINGERPRINT
+</span><span style="color:#f2777a;">sops_unencrypted_suffix</span><span style="color:#d3d0c8;">=</span><span style="color:#99cc99;">_unencrypted
+</span><span style="color:#f2777a;">sops_version</span><span style="color:#d3d0c8;">=</span><span style="color:#99cc99;">3.7.3
+</span><span style="color:#f2777a;">sops_pgp__list_0__map_created_at</span><span style="color:#d3d0c8;">=</span><span style="color:#99cc99;">2022-08-27T21:08:17Z
+</span><span style="color:#f2777a;">sops_pgp__list_0__map_enc</span><span style="color:#d3d0c8;">=</span><span style="color:#99cc99;">-----BEGIN </span><span style="color:#6699cc;">PGP</span><span style="color:#d3d0c8;"> MESSAGE-----</span><span style="color:#66cccc;">\n</span><span style="color:#d3d0c8;">...</span><span style="color:#66cccc;">\n</span><span style="color:#d3d0c8;">-----END PGP MESSAGE-----</span><span style="color:#66cccc;">\n
+</span>
+</code></pre>
+<p>I then include this encrypted version of the <code>creds.env</code> file with <code>flake.nix</code>,
+and source the environment variables from it:</p>
+<pre style="background-color:#2d2d2d;" lang="sh"><code>
+<span style="color:#6699cc;">devShells.terraform</span><span style="color:#d3d0c8;"> = pkgs.mkShell {
+</span><span style="color:#d3d0c8;">  buildInputs = with pkgs; </span><span style="color:#cc99cc;">[</span><span style="color:#d3d0c8;"> sops terraform tflint terraform-docs </span><span style="color:#cc99cc;">]</span><span style="color:#d3d0c8;">;
+</span><span style="color:#d3d0c8;">  shellHook = &#39;&#39;
+</span><span style="color:#d3d0c8;">    set -a
+</span><span style="color:#d3d0c8;">    source &lt;(${</span><span style="color:#f2777a;">pkgs.sops</span><span style="color:#d3d0c8;">}/bin/sops --decrypt ${</span><span style="color:#f2777a;">toString .</span><span style="color:#d3d0c8;">/creds.env})
+</span><span style="color:#d3d0c8;">    set +a
+</span><span style="color:#d3d0c8;">  &#39;&#39;;
+</span><span style="color:#d3d0c8;">};
+</span>
+</code></pre>
+<p>Now every time I drop into terraform environments that need those credentials,
+direnv automatically populates my environment with terraform and the associated
+credentials (once I unlock the SOPs encrypted file with my GPG passphrase).
+Once I leave that directory, the shell is depopulated.
+The credentials themselves are no longer in plaintext in a <code>.tfvars</code>, <code>.env</code> or
+shell history file, but are encrypted on disk and decrypted with SOPS and my
+GPG key when needed.</p>
+
+        </div>
+        
+<footer>
+    <div id="derivation">
+        <a href="https://github.com/autophagy/wordhord">/nix/store/s6h4f447j8q0npslmksjy5gamffk5j30-wordhord-0.1.0</a>
+    </div>
+</footer>
+
+    </body>
+</html>
