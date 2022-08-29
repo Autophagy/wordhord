@@ -35,7 +35,7 @@ When learning Nix you quickly come across [NixOS](https://nixos.org/), a Linux f
 Nix package manager. It extends the declarative focus of Nix to the system itself, letting
 me define my system as a Nix expression:
 
-```nix
+```sh
   hardware.pulseaudio.enable = true;
 
   hardware.bluetooth = {
@@ -85,7 +85,7 @@ Using [Home Manager](https://github.com/nix-community/home-manager) has let me
 even bundle my previously ad-hoc dotfile management system into the same Nix
 expression format. For example, my ``zsh`` configuration now looks like:
 
-```nix
+```sh
 {
   home.packages = with pkgs; [ pure-prompt ];
 
