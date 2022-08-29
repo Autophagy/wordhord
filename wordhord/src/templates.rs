@@ -39,7 +39,7 @@ pub static POST: &str = r##"
     <meta property="og:type" content="website">
     <meta property="og:title" content="{post.title}">
     <meta property="og:description" content="{post.published} // {post.read_time} mins // [ {{ for tag in post.tags}}{tag} {{ endfor }}]">
-    <meta property="og:image" content="/static/images/card.png">
+    <meta property="og:image" content="{config.url}/static/images/card.png">
 </head>
     <body>
         <header>

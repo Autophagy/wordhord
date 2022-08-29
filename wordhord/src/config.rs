@@ -44,6 +44,7 @@ pub struct Config {
     pub hord_dir: String,
     pub tag_dir: String,
     pub repo: String,
+    pub url: String,
 }
 
 impl Config {

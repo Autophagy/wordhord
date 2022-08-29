@@ -6,4 +6,5 @@ in  { hord : List Post
     , hord_dir : Text
     , tag_dir : Text
     , repo : Text
+    , url : Text
     }

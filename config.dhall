@@ -33,5 +33,6 @@ in    { hord
       , hord_dir = "gewritu"
       , tag_dir = "tags"
       , repo = "https://github.com/autophagy/wordhord"
+      , url = "https://wordhord.autophagy.io"
       }
     : Config
