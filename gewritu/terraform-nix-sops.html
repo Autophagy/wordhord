@@ -10,10 +10,11 @@
     <link rel="stylesheet" href="/static/css/main.css">
     <title>[2022-08-29] :: Consistent Terraform Environments with Nix and Sops</title>
 
-    <meta property="og:type" content="website">
+    <meta property="og:type" content="article">
     <meta property="og:title" content="Consistent Terraform Environments with Nix and Sops">
     <meta property="og:description" content="2022-08-29 // 4 mins // [ Nix DevOps ]">
     <meta property="og:image" content="https://wordhord.autophagy.io/static/images/card.png">
+    <meta name="twitter:card" content="summary_large_image">
 </head>
     <body>
         <header>
@@ -56,7 +57,7 @@ and a <code>.tfvar</code> file:</p>
 </span>
 </code></pre>
 <p><code>variables.tf</code></p>
-<pre style="background-color:#2d2d2d;" lang="tcl"><code>
+<pre lang="tcl" style="background-color:#2d2d2d;"><code>
 <span style="color:#cc99cc;">variable </span><span style="color:#d3d0c8;">&quot;</span><span style="color:#99cc99;">access_key</span><span style="color:#d3d0c8;">&quot; {
 </span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">type</span><span style="color:#d3d0c8;">      = string
 </span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">sensitive</span><span style="color:#d3d0c8;"> = true
@@ -105,7 +106,7 @@ variables:</p>
 </span>
 </code></pre>
 <p><code>flake.nix</code></p>
-<pre style="background-color:#2d2d2d;" lang="sh"><code>
+<pre lang="sh" style="background-color:#2d2d2d;"><code>
 <span style="color:#d3d0c8;">{
 </span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">inputs</span><span style="color:#d3d0c8;"> = {
 </span><span style="color:#d3d0c8;">    nixpkgs.url = &quot;</span><span style="color:#99cc99;">nixpkgs/nixos-unstable</span><span style="color:#d3d0c8;">&quot;;
@@ -145,7 +146,7 @@ terraform version, some side-tooling, and an environment populated with the envi
 variables I need to work.</p>
 <p>However, the credentials are still in plain text, both in the <code>creds.env</code> file
 next to <code>flake.nix</code>, but also in the nix store:</p>
-<pre style="background-color:#2d2d2d;" lang="sh"><code>
+<pre lang="sh" style="background-color:#2d2d2d;"><code>
 <span style="color:#6699cc;">λ</span><span style="color:#d3d0c8;"> cat /nix/store/y14ih9jfyrqmdxqpg1c5x6aws5162slz-source/creds.env
 </span><span style="color:#f2777a;">AWS_ACCESS_KEY_ID</span><span style="color:#d3d0c8;">=&quot;</span><span style="color:#99cc99;">anaccesskey</span><span style="color:#d3d0c8;">&quot;
 </span><span style="color:#f2777a;">AWS_SECRET_ACCESS_KEY</span><span style="color:#d3d0c8;">=&quot;</span><span style="color:#99cc99;">asecretkey</span><span style="color:#d3d0c8;">&quot;
@@ -159,7 +160,7 @@ It works with a variety of filetypes, including dotenv files!</p>
 <p>Using my GPG key to encrypt the above <code>creds.env</code> file yields the following
 (notice that the file itself isn't GPG encrypted, only the individual environment
 variables!):</p>
-<pre style="background-color:#2d2d2d;" lang="sh"><code>
+<pre lang="sh" style="background-color:#2d2d2d;"><code>
 <span style="color:#6699cc;">λ</span><span style="color:#d3d0c8;"> export SOPS_PGP_FP=&quot;</span><span style="color:#99cc99;">MY GPG KEY FINGERPRINT</span><span style="color:#d3d0c8;">&quot;
 </span><span style="color:#6699cc;">λ</span><span style="color:#d3d0c8;"> sops</span><span style="color:#f2777a;"> --encrypt</span><span style="color:#d3d0c8;"> creds.env
 </span><span style="color:#f2777a;">AWS_ACCESS_KEY_ID</span><span style="color:#d3d0c8;">=</span><span style="color:#99cc99;">ENC</span><span style="color:#cc99cc;">[</span><span style="color:#99cc99;">AES256_GCM,data:...,type:str</span><span style="color:#cc99cc;">]
@@ -175,7 +176,7 @@ variables!):</p>
 </code></pre>
 <p>I then include this encrypted version of the <code>creds.env</code> file with <code>flake.nix</code>,
 and source the environment variables from it:</p>
-<pre style="background-color:#2d2d2d;" lang="sh"><code>
+<pre lang="sh" style="background-color:#2d2d2d;"><code>
 <span style="color:#6699cc;">devShells.terraform</span><span style="color:#d3d0c8;"> = pkgs.mkShell {
 </span><span style="color:#d3d0c8;">  buildInputs = with pkgs; </span><span style="color:#cc99cc;">[</span><span style="color:#d3d0c8;"> sops terraform tflint terraform-docs </span><span style="color:#cc99cc;">]</span><span style="color:#d3d0c8;">;
 </span><span style="color:#d3d0c8;">  shellHook = &#39;&#39;
@@ -198,7 +199,7 @@ GPG key when needed.</p>
         
 <footer>
     <div id="derivation">
-        <a href="https://github.com/autophagy/wordhord">/nix/store/6fn623nbdlp6rbl7jn89fvcy45dw7vhx-wordhord-0.1.0</a>
+        <a href="https://github.com/autophagy/wordhord">/nix/store/ydh821pp27053w3k5w1449lrjx281b7z-wordhord-0.1.0</a>
     </div>
 </footer>
 
