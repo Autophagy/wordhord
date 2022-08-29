@@ -19,6 +19,12 @@ let hord =
         , tags = [ Tag.Nix ]
         , content = "./hord/from-arch-to-nixos.md"
         }
+      , { title = "Consistent Terraform Environments with Nix and Sops"
+        , published = "2022-08-29"
+        , slug = "terraform-nix-sops"
+        , tags = [ Tag.Nix, Tag.DevOps ] : List Tag
+        , content = "./hord/terraform-nix-sops.md"
+        }
       ]
 
 in    { hord

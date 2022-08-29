@@ -7,11 +7,12 @@ use std::slice::Iter;
 #[derive(Clone, Deserialize, Serialize, PartialEq)]
 pub enum Tag {
     Nix,
+    DevOps,
 }
 
 impl Tag {
     pub fn iterator() -> Iter<'static, Tag> {
-        static TAGS: [Tag; 1] = [Tag::Nix];
+        static TAGS: [Tag; 2] = [Tag::Nix, Tag::DevOps];
         TAGS.iter()
     }
 }
@@ -20,6 +21,7 @@ impl fmt::Display for Tag {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let tag = match self {
             Tag::Nix => "Nix",
+            Tag::DevOps => "DevOps",
         };
         write!(f, "{}", tag)
     }
