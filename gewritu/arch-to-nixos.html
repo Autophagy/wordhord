@@ -69,41 +69,41 @@ is why these environments also have no network access).</p>
 <p>When learning Nix you quickly come across <a href="https://nixos.org/">NixOS</a>, a Linux flavour based around the
 Nix package manager. It extends the declarative focus of Nix to the system itself, letting
 me define my system as a Nix expression:</p>
-<pre lang="nix" style="background-color:#2d2d2d;"><code>
-<span style="color:#d3d0c8;">  hardware.pulseaudio.enable = true;
+<pre lang="sh" style="background-color:#2d2d2d;"><code>
+<span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">hardware.pulseaudio.enable</span><span style="color:#d3d0c8;"> = true;
 </span><span style="color:#d3d0c8;">
-</span><span style="color:#d3d0c8;">  hardware.bluetooth = {
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">hardware.bluetooth</span><span style="color:#d3d0c8;"> = {
 </span><span style="color:#d3d0c8;">    enable = true;
 </span><span style="color:#d3d0c8;">    powerOnBoot = pkgs.lib.mkForce false;
 </span><span style="color:#d3d0c8;">  };
 </span><span style="color:#d3d0c8;">
-</span><span style="color:#d3d0c8;">  networking.networkmanager.enable = true;
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">networking.networkmanager.enable</span><span style="color:#d3d0c8;"> = true;
 </span><span style="color:#d3d0c8;">
-</span><span style="color:#d3d0c8;">  time.timeZone = &quot;Europe/Berlin&quot;;
-</span><span style="color:#d3d0c8;">  i18n.defaultLocale = &quot;en_GB.UTF-8&quot;;
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">time.timeZone</span><span style="color:#d3d0c8;"> = &quot;</span><span style="color:#99cc99;">Europe/Berlin</span><span style="color:#d3d0c8;">&quot;;
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">i18n.defaultLocale</span><span style="color:#d3d0c8;"> = &quot;</span><span style="color:#99cc99;">en_GB.UTF-8</span><span style="color:#d3d0c8;">&quot;;
 </span><span style="color:#d3d0c8;">
-</span><span style="color:#d3d0c8;">  services.xserver = {
-</span><span style="color:#d3d0c8;">    layout = &quot;us&quot;;
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">services.xserver</span><span style="color:#d3d0c8;"> = {
+</span><span style="color:#d3d0c8;">    layout = &quot;</span><span style="color:#99cc99;">us</span><span style="color:#d3d0c8;">&quot;;
 </span><span style="color:#d3d0c8;">    xkbVariant = &quot;&quot;;
 </span><span style="color:#d3d0c8;">    enable = true;
 </span><span style="color:#d3d0c8;">    displayManager = {
 </span><span style="color:#d3d0c8;">      lightdm.enable = true;
-</span><span style="color:#d3d0c8;">      defaultSession = &quot;none+i3&quot;;
+</span><span style="color:#d3d0c8;">      defaultSession = &quot;</span><span style="color:#99cc99;">none+i3</span><span style="color:#d3d0c8;">&quot;;
 </span><span style="color:#d3d0c8;">    };
 </span><span style="color:#d3d0c8;">    windowManager.i3.enable = true;
 </span><span style="color:#d3d0c8;">
 </span><span style="color:#d3d0c8;">    libinput.enable = true;
 </span><span style="color:#d3d0c8;">  };
 </span><span style="color:#d3d0c8;">
-</span><span style="color:#d3d0c8;">  virtualisation.podman = {
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">virtualisation.podman</span><span style="color:#d3d0c8;"> = {
 </span><span style="color:#d3d0c8;">    enable = true;
 </span><span style="color:#d3d0c8;">    dockerCompat = true;
 </span><span style="color:#d3d0c8;">  };
 </span><span style="color:#d3d0c8;">
-</span><span style="color:#d3d0c8;">  users.users.mika = {
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">users.users.mika</span><span style="color:#d3d0c8;"> = {
 </span><span style="color:#d3d0c8;">    isNormalUser = true;
-</span><span style="color:#d3d0c8;">    description = &quot;Mika Naylor&quot;;
-</span><span style="color:#d3d0c8;">    extraGroups = [ &quot;networkmanager&quot; &quot;wheel&quot; &quot;audio&quot; &quot;video&quot; ];
+</span><span style="color:#d3d0c8;">    description = &quot;</span><span style="color:#99cc99;">Mika Naylor</span><span style="color:#d3d0c8;">&quot;;
+</span><span style="color:#d3d0c8;">    extraGroups = </span><span style="color:#cc99cc;">[ </span><span style="color:#d3d0c8;">&quot;</span><span style="color:#99cc99;">networkmanager</span><span style="color:#d3d0c8;">&quot; &quot;</span><span style="color:#99cc99;">wheel</span><span style="color:#d3d0c8;">&quot; &quot;</span><span style="color:#99cc99;">audio</span><span style="color:#d3d0c8;">&quot; &quot;</span><span style="color:#99cc99;">video</span><span style="color:#d3d0c8;">&quot; </span><span style="color:#cc99cc;">]</span><span style="color:#d3d0c8;">;
 </span><span style="color:#d3d0c8;">    shell = pkgs.zsh;
 </span><span style="color:#d3d0c8;">  };
 </span>
@@ -117,31 +117,31 @@ rebuild the system again if I need to.</p>
 <p>Using <a href="https://github.com/nix-community/home-manager">Home Manager</a> has let me
 even bundle my previously ad-hoc dotfile management system into the same Nix
 expression format. For example, my <code>zsh</code> configuration now looks like:</p>
-<pre style="background-color:#2d2d2d;" lang="nix"><code>
+<pre lang="sh" style="background-color:#2d2d2d;"><code>
 <span style="color:#d3d0c8;">{
-</span><span style="color:#d3d0c8;">  home.packages = with pkgs; [ pure-prompt ];
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">home.packages</span><span style="color:#d3d0c8;"> = with pkgs; </span><span style="color:#66cccc;">[</span><span style="color:#d3d0c8;"> pure-prompt </span><span style="color:#66cccc;">]</span><span style="color:#d3d0c8;">;
 </span><span style="color:#d3d0c8;">
-</span><span style="color:#d3d0c8;">  programs.zsh = {
+</span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">programs.zsh</span><span style="color:#d3d0c8;"> = {
 </span><span style="color:#d3d0c8;">    enable = true;
-</span><span style="color:#d3d0c8;">    dotDir = &quot;.config/zsh&quot;;
+</span><span style="color:#d3d0c8;">    dotDir = &quot;</span><span style="color:#99cc99;">.config/zsh</span><span style="color:#d3d0c8;">&quot;;
 </span><span style="color:#d3d0c8;">    enableSyntaxHighlighting = true;
 </span><span style="color:#d3d0c8;">    shellAliases = {
-</span><span style="color:#d3d0c8;">      ll = &quot;ls -l&quot;;
-</span><span style="color:#d3d0c8;">      g = &quot;git&quot;;
+</span><span style="color:#d3d0c8;">      ll = &quot;</span><span style="color:#99cc99;">ls -l</span><span style="color:#d3d0c8;">&quot;;
+</span><span style="color:#d3d0c8;">      g = &quot;</span><span style="color:#99cc99;">git</span><span style="color:#d3d0c8;">&quot;;
 </span><span style="color:#d3d0c8;">    };
 </span><span style="color:#d3d0c8;">    history = {
 </span><span style="color:#d3d0c8;">      size = 10000;
-</span><span style="color:#d3d0c8;">      path = &quot;$HOME/.zsh_history&quot;;
+</span><span style="color:#d3d0c8;">      path = &quot;$</span><span style="color:#f2777a;">HOME</span><span style="color:#99cc99;">/.zsh_history</span><span style="color:#d3d0c8;">&quot;;
 </span><span style="color:#d3d0c8;">      ignoreSpace = true;
 </span><span style="color:#d3d0c8;">    };
 </span><span style="color:#d3d0c8;">    initExtra = &quot;
-</span><span style="color:#d3d0c8;">      autoload -U promptinit; promptinit
-</span><span style="color:#d3d0c8;">      PURE_PROMPT_SYMBOL=&quot;λ&quot;
-</span><span style="color:#d3d0c8;">      prompt pure
-</span><span style="color:#d3d0c8;">    &quot;;
+</span><span style="color:#99cc99;">      autoload -U promptinit; promptinit
+</span><span style="color:#99cc99;">      PURE_PROMPT_SYMBOL=</span><span style="color:#d3d0c8;">&quot;λ&quot;
+</span><span style="color:#99cc99;">      prompt pure
+</span><span style="color:#99cc99;">    </span><span style="color:#d3d0c8;">&quot;;
 </span><span style="color:#d3d0c8;">    oh-my-zsh = {
 </span><span style="color:#d3d0c8;">      enable = true;
-</span><span style="color:#d3d0c8;">      plugins = [ &quot;ssh-agent&quot; &quot;git&quot; ];
+</span><span style="color:#d3d0c8;">      plugins = </span><span style="color:#cc99cc;">[ </span><span style="color:#d3d0c8;">&quot;</span><span style="color:#99cc99;">ssh-agent</span><span style="color:#d3d0c8;">&quot; &quot;</span><span style="color:#99cc99;">git</span><span style="color:#d3d0c8;">&quot; </span><span style="color:#cc99cc;">]</span><span style="color:#d3d0c8;">;
 </span><span style="color:#d3d0c8;">    };
 </span><span style="color:#d3d0c8;">  };
 </span><span style="color:#d3d0c8;">}
@@ -175,7 +175,7 @@ down the line to see if I still feel the same way.</p>
         
 <footer>
     <div id="derivation">
-        <a href="https://github.com/autophagy/wordhord">/nix/store/ydh821pp27053w3k5w1449lrjx281b7z-wordhord-0.1.0</a>
+        <a href="https://github.com/autophagy/wordhord">/nix/store/a5djqmxa7jw1f1vh6dbwsqi905sxqsb3-wordhord-0.1.0</a>
     </div>
 </footer>
 
