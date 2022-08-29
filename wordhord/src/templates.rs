@@ -35,6 +35,11 @@ pub static POST: &str = r##"
     <link rel="shortcut icon" href="/favicon.ico">
     <link rel="stylesheet" href="/static/css/main.css">
     <title>[{post.published}] :: {post.title}</title>
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{post.title}">
+    <meta property="og:description" content="{post.published} // {post.read_time} mins // [ {{ for tag in post.tags}}{tag} {{ endfor }}]">
+    <meta property="og:image" content="/static/images/card.png">
 </head>
     <body>
         <header>
