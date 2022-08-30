@@ -23,19 +23,22 @@
             pname = "wordhord";
             inherit (bin) version;
             src = ./.;
-            buildInputs = [ bin ];
+            buildInputs = [ bin pkgs.ibm-plex ];
 
             buildPhase = ''
-              export BUILDDIR=$(pwd)
+              export BUILDDIR=$(pwd)/build
               export DRV=${placeholder "out"}
-              cd $src
+
               ${bin}/bin/wordhord $src/config.dhall
+
+              mkdir -p $BUILDDIR/static/fonts
+              cp ${pkgs.ibm-plex}/share/fonts/opentype/IBMPlexMono-Regular.otf $BUILDDIR/static/fonts
             '';
 
             installPhase = ''
               mkdir -p $out
               cp -r $BUILDDIR/* $out
-              cp -r static $out
+              cp -r static/* $out/static
             '';
           };
 
