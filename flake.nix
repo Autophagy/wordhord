@@ -23,7 +23,7 @@
             pname = "wordhord";
             inherit (bin) version;
             src = ./.;
-            buildInputs = [ bin pkgs.ibm-plex ];
+            buildInputs = [ bin ];
 
             buildPhase = ''
               export BUILDDIR=$(pwd)/build
