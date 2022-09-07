@@ -66,6 +66,16 @@ pub static POST: &str = r##"
                 </div>
             </div>
         </header>
+        {{ if post.contents }}
+        <div id="contents">
+            contents
+            <ul>
+            {{ for contentsItem in post.contents }}
+                <li><a href="#{contentsItem.link}">{contentsItem.header}</a></li>
+            {{ endfor }}
+            </ul>
+        </div>
+        {{ endif }}
         <div id="content">
             {post.content}
         </div>

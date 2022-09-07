@@ -213,3 +213,14 @@ section.footnotes {
 footer #derivation {
     word-wrap: anywhere;
 }
+
+#contents ul {
+    list-style: none;
+    padding-bottom: 1em;
+    margin-top: 0em;
+}
+
+#contents ul li:before {
+    content: '::';
+    padding-right: 1ch;
+}

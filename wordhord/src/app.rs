@@ -1,10 +1,14 @@
 use chrono::NaiveDate;
+use comrak::nodes::{NodeHeading, NodeValue};
 use comrak::plugins::syntect::SyntectAdapter;
-use comrak::{markdown_to_html_with_plugins, ComrakOptions, ComrakPlugins};
+use comrak::{
+    format_html, markdown_to_html_with_plugins, parse_document, Anchorizer, Arena, ComrakOptions,
+    ComrakPlugins,
+};
 use serde::Serialize;
 use std::error::Error;
-use std::fs;
 use std::path::Path;
+use std::{fs, io};
 use tinytemplate::{format_unescaped, TinyTemplate};
 
 use crate::config::{Config, Tag};
@@ -18,12 +22,19 @@ struct TagPage<'a> {
 }
 
 #[derive(Serialize, Clone)]
+struct ContentsItem {
+    header: String,
+    link: String,
+}
+
+#[derive(Serialize, Clone)]
 struct Post<'a> {
     title: &'a str,
     published: NaiveDate,
     slug: &'a str,
     tags: &'a Vec<Tag>,
     content: String,
+    contents: Vec<ContentsItem>,
     read_time: usize,
 }
 
@@ -101,12 +112,42 @@ fn render_posts(hord: &Vec<crate::config::Post>) -> std::io::Result<Vec<Post>> {
     let mut posts: Vec<Post> = Vec::new();
     for hord_post in hord {
         let content = fs::read_to_string(&hord_post.content)?;
+
+        let arena = Arena::new();
+        let mut anchorizer = Anchorizer::new();
+        let root = parse_document(&arena, &content, &options);
+
+        let contents: Vec<ContentsItem> = root
+            .children()
+            .filter(|n| {
+                matches!(
+                    &n.data.borrow().value,
+                    NodeValue::Heading(NodeHeading { level: 2, .. })
+                )
+            })
+            .map(|n| {
+                n.detach();
+                let mut buffer = io::Cursor::new(Vec::<u8>::new());
+                n.children().for_each(|n| {
+                    format_html(n, &options, &mut buffer).unwrap();
+                });
+
+                let s = String::from_utf8(buffer.into_inner()).unwrap();
+                let anchor = anchorizer.anchorize(s.clone());
+                ContentsItem {
+                    header: s,
+                    link: anchor,
+                }
+            })
+            .collect();
+
         posts.push(Post {
             title: &hord_post.title,
             published: hord_post.published,
             slug: &hord_post.slug,
             tags: &hord_post.tags,
             content: markdown_to_html_with_plugins(&content, &options, &plugins),
+            contents,
             read_time: estimate_read_time(&content),
         });
     }
