@@ -173,7 +173,8 @@ pub fn build_wordhord(config: &Config) -> Result<(), Box<dyn Error>> {
     fs::create_dir(&hord_path)?;
     for post in &posts {
         let rendered = tt.render("post", &PostPage { post, config })?;
-        fs::write(format!("{}/{}.html", &hord_path, post.slug), rendered)?;
+        fs::create_dir(format!("{}/{}", &hord_path, &post.slug))?;
+        fs::write(format!("{}/{}/index.html", &hord_path, post.slug), rendered)?;
     }
 
     let tag_path = format!("{}/{}", &config.build_dir, &config.tag_dir);
@@ -191,7 +192,8 @@ pub fn build_wordhord(config: &Config) -> Result<(), Box<dyn Error>> {
                 config,
             },
         )?;
-        fs::write(format!("{}/{}.html", &tag_path, tag), rendered_tag)?;
+        fs::create_dir(format!("{}/{}", &tag_path, &tag))?;
+        fs::write(format!("{}/{}/index.html", &tag_path, tag), rendered_tag)?;
     }
 
     Ok(())
