@@ -69,7 +69,7 @@ and a <code>.tfvar</code> file:</p>
 </span>
 </code></pre>
 <p><code>variables.tf</code></p>
-<pre lang="tcl" style="background-color:#2d2d2d;"><code>
+<pre style="background-color:#2d2d2d;" lang="tcl"><code>
 <span style="color:#cc99cc;">variable </span><span style="color:#d3d0c8;">&quot;</span><span style="color:#99cc99;">access_key</span><span style="color:#d3d0c8;">&quot; {
 </span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">type</span><span style="color:#d3d0c8;">      = string
 </span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">sensitive</span><span style="color:#d3d0c8;"> = true
@@ -82,7 +82,7 @@ and a <code>.tfvar</code> file:</p>
 </span>
 </code></pre>
 <p><code>aws.tfvars</code></p>
-<pre style="background-color:#2d2d2d;" lang="tcl"><code>
+<pre lang="tcl" style="background-color:#2d2d2d;"><code>
 <span style="color:#6699cc;">access_key</span><span style="color:#d3d0c8;"> = &lt;AWS_ACCESS_KEY_ID&gt;
 </span><span style="color:#6699cc;">secret_key</span><span style="color:#d3d0c8;"> = &lt;AWS_SECRET_ACCESS_KEY&gt;
 </span>
@@ -95,7 +95,7 @@ and you could be in for a bad time.</p>
 <p>Another common way, that I also use, is with environment variables. For example,
 the AWS provider will also look for valid credentials in <code>AWS_ACCESS_KEY_ID</code> and
 <code>AWS_SECRET_ACCESS_KEY</code>, so a typical use of terraform would look like:</p>
-<pre style="background-color:#2d2d2d;" lang="sh"><code>
+<pre lang="sh" style="background-color:#2d2d2d;"><code>
 <span style="color:#6699cc;">$</span><span style="color:#d3d0c8;"> export AWS_ACCESS_KEY_ID=&quot;</span><span style="color:#99cc99;">anaccesskey</span><span style="color:#d3d0c8;">&quot;
 </span><span style="color:#6699cc;">$</span><span style="color:#d3d0c8;"> export AWS_SECRET_ACCESS_KEY=&quot;</span><span style="color:#99cc99;">asecretkey</span><span style="color:#d3d0c8;">&quot;
 </span><span style="color:#6699cc;">$</span><span style="color:#d3d0c8;"> terraform plan
@@ -158,7 +158,7 @@ terraform version, some side-tooling, and an environment populated with the envi
 variables I need to work.</p>
 <p>However, the credentials are still in plain text, both in the <code>creds.env</code> file
 next to <code>flake.nix</code>, but also in the nix store:</p>
-<pre lang="sh" style="background-color:#2d2d2d;"><code>
+<pre style="background-color:#2d2d2d;" lang="sh"><code>
 <span style="color:#6699cc;">λ</span><span style="color:#d3d0c8;"> cat /nix/store/y14ih9jfyrqmdxqpg1c5x6aws5162slz-source/creds.env
 </span><span style="color:#f2777a;">AWS_ACCESS_KEY_ID</span><span style="color:#d3d0c8;">=&quot;</span><span style="color:#99cc99;">anaccesskey</span><span style="color:#d3d0c8;">&quot;
 </span><span style="color:#f2777a;">AWS_SECRET_ACCESS_KEY</span><span style="color:#d3d0c8;">=&quot;</span><span style="color:#99cc99;">asecretkey</span><span style="color:#d3d0c8;">&quot;
@@ -211,7 +211,7 @@ GPG key when needed.</p>
         
 <footer>
     <div id="derivation">
-        <a href="https://github.com/autophagy/wordhord">/nix/store/r9ys8jx0jfq0506y9x05ky6dqchjjfrl-wordhord-0.1.0</a>
+        <a href="https://github.com/autophagy/wordhord">/nix/store/3nps7i7x5yll1rdbsbs6pfnd5fkwpwz8-wordhord-0.1.0</a>
     </div>
 </footer>
 
