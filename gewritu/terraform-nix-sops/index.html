@@ -60,7 +60,7 @@ secret access keys for AWS. There's a few ways of getting these credentials into
 terraform. One way is by by adding them into the provider using sensitive variables
 and a <code>.tfvar</code> file:</p>
 <p><code>main.tf</code></p>
-<pre style="background-color:#2d2d2d;" lang="tcl"><code>
+<pre lang="tcl" style="background-color:#2d2d2d;"><code>
 <span style="color:#6699cc;">provider </span><span style="color:#d3d0c8;">&quot;</span><span style="color:#99cc99;">aws</span><span style="color:#d3d0c8;">&quot; {
 </span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">region</span><span style="color:#d3d0c8;">     = &quot;</span><span style="color:#99cc99;">eu-west-1</span><span style="color:#d3d0c8;">&quot;
 </span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">access_key</span><span style="color:#d3d0c8;"> = var.access_key
@@ -82,7 +82,7 @@ and a <code>.tfvar</code> file:</p>
 </span>
 </code></pre>
 <p><code>aws.tfvars</code></p>
-<pre lang="tcl" style="background-color:#2d2d2d;"><code>
+<pre style="background-color:#2d2d2d;" lang="tcl"><code>
 <span style="color:#6699cc;">access_key</span><span style="color:#d3d0c8;"> = &lt;AWS_ACCESS_KEY_ID&gt;
 </span><span style="color:#6699cc;">secret_key</span><span style="color:#d3d0c8;"> = &lt;AWS_SECRET_ACCESS_KEY&gt;
 </span>
@@ -158,7 +158,7 @@ terraform version, some side-tooling, and an environment populated with the envi
 variables I need to work.</p>
 <p>However, the credentials are still in plain text, both in the <code>creds.env</code> file
 next to <code>flake.nix</code>, but also in the nix store:</p>
-<pre style="background-color:#2d2d2d;" lang="sh"><code>
+<pre lang="sh" style="background-color:#2d2d2d;"><code>
 <span style="color:#6699cc;">λ</span><span style="color:#d3d0c8;"> cat /nix/store/y14ih9jfyrqmdxqpg1c5x6aws5162slz-source/creds.env
 </span><span style="color:#f2777a;">AWS_ACCESS_KEY_ID</span><span style="color:#d3d0c8;">=&quot;</span><span style="color:#99cc99;">anaccesskey</span><span style="color:#d3d0c8;">&quot;
 </span><span style="color:#f2777a;">AWS_SECRET_ACCESS_KEY</span><span style="color:#d3d0c8;">=&quot;</span><span style="color:#99cc99;">asecretkey</span><span style="color:#d3d0c8;">&quot;
@@ -188,7 +188,7 @@ variables!):</p>
 </code></pre>
 <p>I then include this encrypted version of the <code>creds.env</code> file with <code>flake.nix</code>,
 and source the environment variables from it:</p>
-<pre style="background-color:#2d2d2d;" lang="sh"><code>
+<pre lang="sh" style="background-color:#2d2d2d;"><code>
 <span style="color:#6699cc;">devShells.terraform</span><span style="color:#d3d0c8;"> = pkgs.mkShell {
 </span><span style="color:#d3d0c8;">  buildInputs = with pkgs; </span><span style="color:#cc99cc;">[</span><span style="color:#d3d0c8;"> sops terraform tflint terraform-docs </span><span style="color:#cc99cc;">]</span><span style="color:#d3d0c8;">;
 </span><span style="color:#d3d0c8;">  shellHook = &#39;&#39;
@@ -211,7 +211,7 @@ GPG key when needed.</p>
         
 <footer>
     <div id="derivation">
-        <a href="https://github.com/autophagy/wordhord">/nix/store/3nps7i7x5yll1rdbsbs6pfnd5fkwpwz8-wordhord-0.1.0</a>
+        <a href="https://github.com/autophagy/wordhord">/nix/store/l9rf9asirgqx8sm2fq66ff68cs28qghj-wordhord-0.1.0</a>
     </div>
 </footer>
 
