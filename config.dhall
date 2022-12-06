@@ -25,6 +25,12 @@ let hord =
         , tags = [ Tag.Nix, Tag.DevOps ] : List Tag
         , content = "./hord/terraform-nix-sops.md"
         }
+      , { title = "Wending and Back"
+        , published = "2022-12-06"
+        , slug = "wending-and-back"
+        , tags = [] : List Tag
+        , content = "./hord/wending-and-back.md"
+        }
       ]
 
 in    { hord
