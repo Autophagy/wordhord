@@ -8,11 +8,12 @@ use std::slice::Iter;
 pub enum Tag {
     Nix,
     DevOps,
+    Personal,
 }
 
 impl Tag {
     pub fn iterator() -> Iter<'static, Tag> {
-        static TAGS: [Tag; 2] = [Tag::Nix, Tag::DevOps];
+        static TAGS: [Tag; 3] = [Tag::Nix, Tag::DevOps, Tag::Personal];
         TAGS.iter()
     }
 }
@@ -22,6 +23,7 @@ impl fmt::Display for Tag {
         let tag = match self {
             Tag::Nix => "Nix",
             Tag::DevOps => "DevOps",
+            Tag::Personal => "Personal",
         };
         write!(f, "{}", tag)
     }

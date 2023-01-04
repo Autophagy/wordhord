@@ -31,6 +31,12 @@ let hord =
         , tags = [] : List Tag
         , content = "./hord/wending-and-back.md"
         }
+      , { title = "2023 Resolutions"
+        , published = "2023-01-04"
+        , slug = "2023-resolutions"
+        , tags = [ Tag.Personal ] : List Tag
+        , content = "./hord/2023-resolutions.md"
+        }
       ]
 
 in    { hord

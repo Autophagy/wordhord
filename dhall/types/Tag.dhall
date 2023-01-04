@@ -1,1 +1,1 @@
-< Nix | DevOps >
+< Nix | DevOps | Personal >
