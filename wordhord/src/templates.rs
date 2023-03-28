@@ -30,7 +30,7 @@ pub static INDEX: &str = r##"
 
 pub static POST: &str = r##"
 <!DOCTYPE html>
-<html lang="en">
+<html class="post" lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -48,13 +48,11 @@ pub static POST: &str = r##"
 </head>
     <body>
         <header>
-            <div id="post-path">
-                <a href="/">wordhord</a>
+            <div id="hero-header">
+                <img src="/static/images/hero/{post.slug}.png" />
+                <div id="post-title">{post.title}</div>
             </div>
             <div id="post-details">
-                <div class="row">
-                    <span class="label">title</span><span class="sep">::</span><span class="detail">{post.title}</span>
-                </div>
                 <div class="row">
                     <span class="label">published</span><span class="sep">::</span><span class="detail">{post.published}</span>
                 </div>

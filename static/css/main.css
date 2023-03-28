@@ -59,6 +59,10 @@ html {
     margin: 2em;
 }
 
+html.post {
+    margin-top: 0em;
+}
+
 body {
     max-width: 1000px;
     width: 100%;
@@ -179,6 +183,25 @@ header {
     margin-bottom: 2em;
 }
 
+#hero-header {
+    position: relative;
+    margin-bottom: 1em;
+}
+
+#hero-header img {
+    display: block;
+    width: 100%;
+}
+
+#post-title {
+    font-size: 1.5em;
+    float: left;
+    background: #1b1b1b;
+    padding: 1em 1em 0em 0em;
+    position: absolute;
+    bottom: 0px;
+}
+
 #post-path {
     margin-bottom: 2em;
 }
@@ -224,3 +247,37 @@ footer #derivation {
     content: '::';
     padding-right: 1ch;
 }
+
+/* ChatGPT Dialogues */
+
+.chatgpt-conversation .message {
+    padding: 2em;
+    margin: 1em 0em;
+    border: 1px solid;
+}
+
+.chatgpt-conversation .me {
+    background-color: #88268821;
+    border-color: #882688;
+}
+
+.chatgpt-conversation .me::before {
+    content: "MIKA";
+    display: block;
+    font-style: italic;
+    opacity: 0.5;
+}
+
+.chatgpt-conversation .gpt {
+    background-color: #3a866d2e;
+    border-color: #3a866d;
+}
+
+.chatgpt-conversation .gpt::before {
+    content: "CHATGPT";
+    display: block;
+    font-style: italic;
+    opacity: 0.5;
+}
+
+
