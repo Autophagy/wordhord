@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html class="post" lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
@@ -18,13 +18,11 @@
 </head>
     <body>
         <header>
-            <div id="post-path">
-                <a href="/">wordhord</a>
+            <div id="hero-header">
+                <img src="/static/images/hero/terraform-nix-sops.png" />
+                <div id="post-title">Consistent Terraform Environments with Nix and Sops</div>
             </div>
             <div id="post-details">
-                <div class="row">
-                    <span class="label">title</span><span class="sep">::</span><span class="detail">Consistent Terraform Environments with Nix and Sops</span>
-                </div>
                 <div class="row">
                     <span class="label">published</span><span class="sep">::</span><span class="detail">2022-08-29</span>
                 </div>
@@ -60,7 +58,7 @@ secret access keys for AWS. There's a few ways of getting these credentials into
 terraform. One way is by by adding them into the provider using sensitive variables
 and a <code>.tfvar</code> file:</p>
 <p><code>main.tf</code></p>
-<pre style="background-color:#2d2d2d;" lang="tcl"><code>
+<pre lang="tcl" style="background-color:#2d2d2d;"><code>
 <span style="color:#6699cc;">provider </span><span style="color:#d3d0c8;">&quot;</span><span style="color:#99cc99;">aws</span><span style="color:#d3d0c8;">&quot; {
 </span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">region</span><span style="color:#d3d0c8;">     = &quot;</span><span style="color:#99cc99;">eu-west-1</span><span style="color:#d3d0c8;">&quot;
 </span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">access_key</span><span style="color:#d3d0c8;"> = var.access_key
@@ -95,7 +93,7 @@ and you could be in for a bad time.</p>
 <p>Another common way, that I also use, is with environment variables. For example,
 the AWS provider will also look for valid credentials in <code>AWS_ACCESS_KEY_ID</code> and
 <code>AWS_SECRET_ACCESS_KEY</code>, so a typical use of terraform would look like:</p>
-<pre style="background-color:#2d2d2d;" lang="sh"><code>
+<pre lang="sh" style="background-color:#2d2d2d;"><code>
 <span style="color:#6699cc;">$</span><span style="color:#d3d0c8;"> export AWS_ACCESS_KEY_ID=&quot;</span><span style="color:#99cc99;">anaccesskey</span><span style="color:#d3d0c8;">&quot;
 </span><span style="color:#6699cc;">$</span><span style="color:#d3d0c8;"> export AWS_SECRET_ACCESS_KEY=&quot;</span><span style="color:#99cc99;">asecretkey</span><span style="color:#d3d0c8;">&quot;
 </span><span style="color:#6699cc;">$</span><span style="color:#d3d0c8;"> terraform plan
@@ -118,7 +116,7 @@ variables:</p>
 </span>
 </code></pre>
 <p><code>flake.nix</code></p>
-<pre lang="sh" style="background-color:#2d2d2d;"><code>
+<pre style="background-color:#2d2d2d;" lang="sh"><code>
 <span style="color:#d3d0c8;">{
 </span><span style="color:#d3d0c8;">  </span><span style="color:#6699cc;">inputs</span><span style="color:#d3d0c8;"> = {
 </span><span style="color:#d3d0c8;">    nixpkgs.url = &quot;</span><span style="color:#99cc99;">nixpkgs/nixos-unstable</span><span style="color:#d3d0c8;">&quot;;
@@ -188,7 +186,7 @@ variables!):</p>
 </code></pre>
 <p>I then include this encrypted version of the <code>creds.env</code> file with <code>flake.nix</code>,
 and source the environment variables from it:</p>
-<pre lang="sh" style="background-color:#2d2d2d;"><code>
+<pre style="background-color:#2d2d2d;" lang="sh"><code>
 <span style="color:#6699cc;">devShells.terraform</span><span style="color:#d3d0c8;"> = pkgs.mkShell {
 </span><span style="color:#d3d0c8;">  buildInputs = with pkgs; </span><span style="color:#cc99cc;">[</span><span style="color:#d3d0c8;"> sops terraform tflint terraform-docs </span><span style="color:#cc99cc;">]</span><span style="color:#d3d0c8;">;
 </span><span style="color:#d3d0c8;">  shellHook = &#39;&#39;
@@ -211,7 +209,7 @@ GPG key when needed.</p>
         
 <footer>
     <div id="derivation">
-        <a href="https://github.com/autophagy/wordhord">/nix/store/4vbzj2x8x29dgbjgx5r8la8jb26kanyp-wordhord-0.1.0</a>
+        <a href="https://github.com/autophagy/wordhord">/nix/store/7qgn49v92j2ij5qyx5rr42nh5iaq5q3n-wordhord-0.1.0</a>
     </div>
 </footer>
 
