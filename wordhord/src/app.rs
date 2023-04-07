@@ -36,6 +36,7 @@ struct Post<'a> {
     content: String,
     contents: Vec<ContentsItem>,
     read_time: usize,
+    hero_model: &'a str,
 }
 
 #[derive(Serialize)]
@@ -149,6 +150,7 @@ fn render_posts(hord: &Vec<crate::config::Post>) -> std::io::Result<Vec<Post>> {
             content: markdown_to_html_with_plugins(&content, &options, &plugins),
             contents,
             read_time: estimate_read_time(&content),
+            hero_model: &hord_post.hero_model,
         });
     }
     posts.sort_by(|a, b| b.published.cmp(&a.published));

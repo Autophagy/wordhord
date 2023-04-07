@@ -62,6 +62,9 @@ pub static POST: &str = r##"
                 <div class="row">
                     <span class="label">tags</span><span class="sep">::</span><span class="detail">[ {{ for tag in post.tags }} <a href="/{config.tag_dir}/{tag}">{tag}</a> {{ endfor }} ]</span>
                 </div>
+                 <div class="row">
+                    <span class="label">hero</span><span class="sep">::</span><span class="detail">{post.hero_model}</span>
+                </div>
             </div>
         </header>
         {{ if post.contents }}

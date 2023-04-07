@@ -12,30 +12,35 @@ let hord =
         , slug = "wes-hal-wordhord"
         , tags = [] : List Tag
         , content = "./hord/wes-hal-wordhord.md"
+        , hero_model = "openjourney-v4"
         }
       , { title = "From Arch to NixOS"
         , published = "2022-07-18"
         , slug = "arch-to-nixos"
         , tags = [ Tag.Nix ]
         , content = "./hord/from-arch-to-nixos.md"
+        , hero_model = "openjourney-v4"
         }
       , { title = "Consistent Terraform Environments with Nix and Sops"
         , published = "2022-08-29"
         , slug = "terraform-nix-sops"
         , tags = [ Tag.Nix, Tag.DevOps ] : List Tag
         , content = "./hord/terraform-nix-sops.md"
+        , hero_model = "openjourney-v4"
         }
       , { title = "Wending and Back"
         , published = "2022-12-06"
         , slug = "wending-and-back"
         , tags = [] : List Tag
         , content = "./hord/wending-and-back.md"
+        , hero_model = "openjourney-v4"
         }
       , { title = "2023 Resolutions"
         , published = "2023-01-04"
         , slug = "2023-resolutions"
         , tags = [ Tag.Personal ] : List Tag
         , content = "./hord/2023-resolutions.md"
+        , hero_model = "openjourney-v4"
         }
       ]
 

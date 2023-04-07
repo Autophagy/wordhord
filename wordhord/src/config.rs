@@ -36,6 +36,7 @@ pub struct Post {
     pub slug: String,
     pub tags: Vec<Tag>,
     pub content: String,
+    pub hero_model: String,
 }
 
 #[derive(Clone, Deserialize, Serialize)]
